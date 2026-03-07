@@ -13,7 +13,7 @@
 
 \tableofcontents
 
-\chapter{Optimization on linear spaces}
+\chapter{Optimization theory on linear spaces}
 These are brief notes based on chapter 5 and 6 of \cite{hu}. We consider the optimization problem for functions defined on subsets of linear spaces. The section on duality refers to chapter 4 of \cite{du} to illustrate an interesting relation between Fenchel duality and Lagrangian duality, which is also useful to generalize the case when constraints are proper cones. For simplicity, we only consider proper functions: taking values in $(-\infty, \infty]$ and not identically infinity. 
 
 \section{Optimization condition}
@@ -58,7 +58,7 @@ Let's apply the insight of the last section to $F$. We consider the perturbation
 }We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function.
 So the dual problem $\sup_\lambda \yk{-F(0,\lambda)} $ can be written as $$\sup_\lambda L(\lambda)\st \lambda\in  K^0$$  In the hemispace case, the polar cone is $$H^0=[0,\infty]^p\times \bar\R^q$$
 
-\subsection{Constraint qualifications}
+\section{Constraint qualifications}
  The tangent cone $\mathcal{T}(x)$ (in the sense of the paratingent cone or contingent cone of Bouligand) at a feasible point $x$ consists of all directions $d$ such that there is a feasible sequence $x_k\to x$ and positive numbers$t_k$ s.t. $$(x_k-x)/t_k\to d$$
  This should be equivalent to feasible directions $d$ s.t. \gs{\liminf_{t\to 0+}\frac{
  d(x+td,C)}{t} =0}  If the feasible set is convex, $\mathcal{T}(x)$ is the closure of the cone consists of open rays that intersect nontrivially the feasible set.
@@ -76,7 +76,7 @@ First we define the relative interior $\ri(C)$ of a set $C$ as the interior of $
 
 When the perturbation $F$ is convex and lower-semicontinuous  (this happens iff $F^{**}=F$), the strong duality holds since the function.  
 
-\section{Algorithms for unconstrained optimization}
+\chapter{Algorithms for unconstrained optimization}
 
 \chapter{First order optimization on manifolds}
  
