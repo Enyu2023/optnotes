@@ -1,0 +1,163 @@
+
+\documentclass[a4paper]{mynotes}
+
+
+\title{{\bfseries{Opt on manifold Notes}}}
+
+\author{{{Li Enyu}}}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\chapter{Optimization on linear spaces}
+These are brief notes based on chapter 5 and 6 of \cite{hu}. We consider the optimization problem for functions defined on subsets of linear spaces. The section on duality refers to chapter 4 of \cite{du} to illustrate an interesting relation between Fenchel duality and Lagrangian duality, which is also useful to generalize the case when constraints are proper cones. For simplicity, we only consider proper functions: taking values in $(-\infty, \infty]$ and not identically infinity. 
+
+\section{Optimization condition}
+
+\subsection{Existence and Uniqueness}
+
+It's well-known that if $f$ is lower semicontinuous and domain is compact, then $f$ has a minimum. Thus if a closed  sublevel set $C=\{f\le c\}$ is bounded and nonempty for some $c\in \mathbb{R}$, then $f$ has a minimum over $C$ hence has a global minimum. A typical example is when $f$ is coercive, i.e. $\lim_{|x|\to\infty}f(x)=\infty$, then the sublevel sets are bounded and nonempty for sufficiently large $c$.
+
+On the other hand, if $f$ is lower semicontinuous and strictly quasiconvex(for any segment connecting points of graph of $f$, the graph lies strictly below maximum of the endpoints; this implies the sublevel sets are strictly convex), then such minimum must be unique.
+
+\section{Duality theory}
+\subsection{Fenchel duality}  
+
+So basically we are extending Legendre transform to general cases: the Frenchel dual of $f$ is defined as $$f^*(y)=\sup_x {\langle x,y\rangle -f(x)}$$It can be understood as the restriction of the support function of the epigraph of $f$: $$f^*(y)=\sup_{(x,t)\in \text{epi}(f)} \langle (x,t),(y,-1)\rangle$$which basically detects the shape of epigraph $f$ by its supporting hyperplanes (although this only record information of its convex hull).
+This dual function is always convex and lower-semicontinuous as they are of a supremum of affine functions, and we have the Fenchel inequality: $$f(x)+f^*(y)\geq \langle x,y\rangle$$
+which immediately implies that the bidual $f^{**}\le f$. If $f$ is convex and lower-semicontinuous, then we have $f^{**}=f$. This is easy if we assume subdifferential exists, in which case we have nice summetry for points $(x,y)$ that equalizing the  Frenchel inequality: $x\in\partial f^*(y), y\in \partial f(x)$. Also, $*$ is order reversing, so in general, $f^{**}$ is the largest lower-semicontinuous convex function that is less than or equal to $f$, i.e. epigraph of $f^{**}$ is the convex hull of epigraph of $f$. 
+
+When function is smooth,  $f^*$ is just extension of Legendre transform. For example if $f(x)=e^x$ then $$f^*(y)=\sup_x  xy -e^x=\begin{cases}
+y\log y-y & y>0\\
+0 & y=0\\\infty & y<0
+\end{cases}$$
+
+An important non-smooth example is the indicator function on some set $C$:
+ $$I_C=\begin{cases}
+0 & x\in C\\
+\infty & x\notin C
+\end{cases}$$  we have $${I_C}^*(y)=\sup_{x\in C} \langle x,y\rangle-{I_C}(x)= \sup_{x\in C} \langle x,y\rangle $$ which is the support function of $C$. For a convex cone $C$, the dual of the support function is again a support function: $$I_C^*=I_{C^0}$$ where $$C^0=\{y:\langle x,y\rangle\le 0 \text{ for all } x\in C\}$$ is the polar cone of $C$.
+
+\subsection{Perturbation}
+
+Now we consider a perturbation $F(x,\lambda)$ of $f$ such that $F(x,0)=f(x)$ and a family of optimization problem $p(\lambda)=\inf_x F(x,\lambda)$, then $$p^{*}(\lambda)= \sup_s \left( \langle \lambda, s \rangle - \inf_y F (y, s) \right)=\sup_{s,y} \left( \langle \lambda, s \rangle -F(y, s) \right)=F^*(0,\lambda)$$
+thus 
+\gs{p^{**}(0)=\sup_{\lambda} \left( \langle 0, \lambda \rangle - u^*(\lambda) \right)=\sup_\lambda \left( -F^*(0,\lambda) \right)=-\inf_\lambda F^*(0,\lambda)}We have weak duality \gs{\sup_\lambda\yk{- F^*(0,\lambda)}\le \inf_y F(y,0)} since $p^{**}(0)\le p(0)$ and $p(0)-p^{**}(0)$ is the duality gap. In some cases the gap is 0, we say strong duality holds.
+
+\subsection{Lagrangian duality}
+
+It is heuristic to consider the smooth case first. Suppose we have a constrained optimization problem $$\min_{x\in C} f(x) \text{ s.t. } g(x)=0$$  If $g$ has constant rank, then the first order condition is that $df$ annihilates the tangent space $\ker dg$, this happens iff $df=\langle\lambda, dg\rangle$ dualizing via a metric, we see  $$\nabla f(x)=\lambda \nabla g(x)$$ It has exactly the same first order optimization condition as the unconstrained minimizing problem of Lagrangian function $$L(x,\lambda)=f(x)+\lambda g(x)$$
+
+A constrained optimization problem is $$ \inf_x f(x) \st g(x)\in K$$ where $K$ is usually a hemispace $H=[-\infty,0]^p\times \bar \{0\}^q$, we can convert the problem to an unconstrained optimization for $$F(x)= f(x)+I_K(g(x)) $$where $I_K$ is the indicator function on $K$. 
+
+Let's apply the insight of the last section to $F$. We consider the perturbation \gs{F(x,\lambda)= f(x)+I_K(g(x)+\lambda)}Then \gs{-F^*(0,\lambda)=&\inf_{y,s} \left( -\langle \lambda,s \rangle +f(y)+I_K(g(y)+s) \right)\\=&\inf_{y,r} \left( -\langle \lambda, r -g(y)\rangle +f(y)+I_K(r)\right)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_K^*(\lambda)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_{K^0}(\lambda)\\=&\inf_{y}L(y,\lambda)-I_{K^0}(\lambda)
+}We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function.
+So the dual problem $\sup_\lambda \yk{-F(0,\lambda)} $ can be written as $$\sup_\lambda L(\lambda)\st \lambda\in  K^0$$  In the hemispace case, the polar cone is $$H^0=[0,\infty]^p\times \bar\R^q$$
+
+\subsection{Constraint qualifications}
+ The tangent cone $\mathcal{T}(x)$ (in the sense of the paratingent cone or contingent cone of Bouligand) at a feasible point $x$ consists of all directions $d$ such that there is a feasible sequence $x_k\to x$ and positive numbers$t_k$ s.t. $$(x_k-x)/t_k\to d$$
+ This should be equivalent to feasible directions $d$ s.t. \gs{\liminf_{t\to 0+}\frac{
+ d(x+td,C)}{t} =0}  If the feasible set is convex, $\mathcal{T}(x)$ is the closure of the cone consists of open rays that intersect nontrivially the feasible set.
+
+ Cones of feasible directions defined above are not that computable. We need to introduce following linear approximations of $\mathcal{T}(x)$. At a fixed feasible point $x$, we rearrange the constraints $g=(g_1,g_2,g_3)$ s.t. $g_1=0,g_2,g_3\le 0$ and $g_2(x)=0,g_3(x)>0$, now the necessary constraints for a feasible direction is \gs{\mathcal{F}(x)=\kh{\nabla g_1,d}=0,\kh{\nabla g_2,d}\le 0} 
+This might be bigger than $\mathcal T(x)$, but if $g_1,g_2$ is regular at $x$ (namely its differential has full rank), then the level set $g_1=0,g_2\leq 0$ defines a manifold with corner near $x$. In this case $\mathcal{T}=\mathcal{F}$ 
+
+
+
+\def\ri{\mathbf{relint}}
+
+
+
+
+For linear optimization, the strong duality always holds.
+
+
+First we define the relative interior $\ri(C)$ of a set $C$ as the interior of $C$ relative to its affine hull, which is the smallest affine space containing $C$. 
+
+
+When the perturbation $F$ is convex and lower-semicontinuous  (this happens iff $F^{**}=F$), the strong duality holds since the function.  
+
+\section{Algorithms for unconstrained optimization}
+
+\chapter{First order optimization on manifolds}
+ 
+These are notes for chapter 4 and 11 of \cite{boumal2023introduction}.
+
+
+
+
+
+\section{Riemannian gradient descent}
+
+Let $M$ be a Riemanian manifold, and $f:M\to \mathbb{R}$ be a smooth function. Let $R_x$ be the retraction at $x\in M$:i.e. $R_x: T_xM\to M$ is a smooth map s.t. $R_x(0)=x$ and $dR_x=id$. The Riemannian gradient descent (RGD) is defined as the iteration of the following update rule: 
+$$x_{k+1}=R_{x_k}(-t_k \nabla f(x_k))$$ where $t_k$ is the step size. 
+
+\subsection{Regularity and convergence}
+
+If $f$ is bounded below, and  if each step we have enough descent:\gs{f(x_k)-f(x_{k+1})\geq c|\nabla f(x_k)|^2\label{cond}\tag{A}}
+Then \gs{\min_{0\le k\le N}|\nabla f(x_k)|^2\le \frac{f(x_0)-f(x_{N+1})}{c(N+1)}\le \frac{f(x_0)-\inf f}{c(N+1)} }
+In particular the gradient will converge to zero, and any accumulation point of the sequence $\{x_k\}$ will be a critical point of $f$. 
+
+It's more natural to write the condition \ref{cond} as the Armijo-Goldstein condition
+\gs{f(x)-f(R_x(-t\nabla f(x)))\ge r t|\nabla f(x)|^2\label{AG}\tag{B}} where $t$ is the step size, $r$ is the ratio of the real descent and expected descent.
+
+This can be done by control the "second order behavior" of $f$: if $f$ is $L$-smooth w.r.t. the retraction, i.e. \gs{f(R_x(s))\le f(x)+\langle \nabla f(x),s\rangle+\frac{L}{2}|s|^2\label{L}\tag{C} } for every $(x,s)\in TM$, then the descendence condition \ref{cond} holds if $$t\in [t_{\min},t_{\max}]\subset (0,2/L)$$In this case $c$ can be chosen as $$c=\inf \hk{t-\frac{Lt^2}{2}}=\min \hk{t_{\max}-\frac{L}{2}t_{\max}^2,t_{\min}-\frac{L}{2}t_{\min}^2}$$
+For example, if we choose $t_k=1/L$, then $c=1/(2L)$.
+
+
+
+
+\subsection{Backtrack line-search}
+In practice, we can not always find a fixed step size s.t. the condition \ref{cond} holds and we don't know a constant $L$ beforehand. We can use backtrack line-search: we start with some initial step size $t_0$, and check if the condition \ref{AG} holds. If not, we shrink the step size by multiplying it with some $\tau\in (0,1)$ until \ref{AG} is satisfied. The algorithm will terminate before \gs{t\le \frac{2(1-r)}{L}} after computing at most \gs{\max\yk{1,2+\log_\tau\left(\frac{2(1-r)}{tL}\right)}}retractions and evaluations as long as $f$ satisfies the $L$-smoothness condition \ref{L}. 
+
+Now we can choose some initial step size sequence $t_k$ that $\sum_{k=0}^\infty t_k=\infty$, then at each step we have the descendence condition \ref{cond} with $$c_k=r\min\hk{t_k,\frac{2\tau (1-r)}{L}}$$
+As a consequence, we have \gs{\min_{0\le k\le K}|\nabla f(x_k)|^2\le \frac{f(x_0)-\inf f}{\sum_{k=0}^K c_k} } which implies $\lim_{k\to\infty}|\nabla f(x_k)|=0$.
+
+
+
+\subsection{Local convergence}
+
+
+\section{Convex optimization}
+
+
+
+In manifold case, we can define (strongly) convexity and Lipschitz smoothness in terms of geodesic segments: sets are convex if all geodesic segments connecting any two points in the set lie entirely within the set, and functions are convex, strongly convex or Lipschitz smooth if their restriction to any geodesic is convex, strongly convex or Lipschitz smooth. 
+
+An alternative way to define $\mu$-strong convexity is that $f(x)-f(y)-\mu\frac{d(x,y)^2}{2}$ being convex w.r.t. $x$. If $x,y$ is joined by a minimizing geodesic with velocity $s\in T_yM$, let $$D_f(x,y)=f(x)-f(y)-\langle \nabla f(y),s\rangle$$ we say $f$ is $\mu$-strongly convex if $D_f(x,y)\ge \frac{\mu}{2}d(x,y)^2$ where $d(\cdot,\cdot)$ is the Riemannian distance. This slightly different from the previous definition, but they are equivalent since the condition is essentially local: the function is ($\mu$-strongly) convex if and only if it is ($\mu$-strongly) convex at an open cover of $S$.
+
+If we assume further that the sublevel set $\{x:f(x)\le f(x_0)\}$ is compact, i.e.the function is lower-semicontinuous and proper, then the 
+
+Convex sets and functions are defined in terms of geodesic segments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+If we have some algorithm s.t. $f(x_k)-f(x_{k-1})$ is non-increasing, then we can show convergence.
+
+
+% ...existing code...
+
+\begin{thebibliography}{9}
+
+\bibitem{boumal2023introduction} Nicolas Boumal. An introduction to optimization on smooth manifolds. Cambridge University Press, 2023.
+
+\bibitem{hu} Hu, W. (2024). Optimization on Manifolds. In Optimization on Manifolds (pp. 1-20). Springer, Cham.
+
+\bibitem{du} The section on duality refers to Convex Optimization Theory by Dimitri P. Bertsekas\end{thebibliography}
+\printindex
+
+\end{document}
