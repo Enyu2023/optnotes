@@ -52,23 +52,57 @@ thus
 
 It is heuristic to consider the smooth case first. Suppose we have a constrained optimization problem $$\min_{x\in C} f(x) \text{ s.t. } g(x)=0$$  If $g$ has constant rank, then the first order condition is that $df$ annihilates the tangent space $\ker dg$, this happens iff $df=\langle\lambda, dg\rangle$ dualizing via a metric, we see  $$\nabla f(x)=\lambda \nabla g(x)$$ It has exactly the same first order optimization condition as the unconstrained minimizing problem of Lagrangian function $$L(x,\lambda)=f(x)+\lambda g(x)$$
 
-A constrained optimization problem is $$ \inf_x f(x) \st g(x)\in K$$ where $K$ is usually a hemispace $H=[-\infty,0]^p\times \bar \{0\}^q$, we can convert the problem to an unconstrained optimization for $$F(x)= f(x)+I_K(g(x)) $$where $I_K$ is the indicator function on $K$. 
+A constrained optimization problem is \gs{\inf_x f(x) \st g(x)\ge_K 0\label{opt}\tag{$P$}} where $K$ is a convex cone, for example a hemispace $H=[-\infty,0]^p\times \bar \{0\}^q$ We can convert the problem to an unconstrained optimization for $$F(x)= f(x)+I_K(g(x)) $$ where $I_K$ is the indicator function on $K$. 
 
-Let's apply the insight of the last section to $F$. We consider the perturbation \gs{F(x,\lambda)= f(x)+I_K(g(x)+\lambda)}Then \gs{-F^*(0,\lambda)=&\inf_{y,s} \left( -\langle \lambda,s \rangle +f(y)+I_K(g(y)+s) \right)\\=&\inf_{y,r} \left( -\langle \lambda, r -g(y)\rangle +f(y)+I_K(r)\right)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_K^*(\lambda)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_{K^0}(\lambda)\\=&\inf_{y}L(y,\lambda)-I_{K^0}(\lambda)
-}We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function.
-So the dual problem $\sup_\lambda \yk{-F(0,\lambda)} $ can be written as $$\sup_\lambda L(\lambda)\st \lambda\in  K^0$$  In the hemispace case, the polar cone is $$H^0=[0,\infty]^p\times \bar\R^q$$
+Let's apply the insight of the last section to $F$. We consider the perturbation \gs{F(x,\lambda)= f(x)+I_K(g(x)+\lambda)}Then \gs{-F^*(0,\lambda)=&\inf_{y,s} \left( -\langle \lambda,s \rangle +f(y)+I_K(g(y)+s) \right)\\=&\inf_{y,r} \left( -\langle \lambda, r -g(y)\rangle +f(y)+I_K(r)\right)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_K^*(\lambda)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_{K^0}(\lambda)
+}
+Consider the Lagrangian:\gs{L(y,\lambda)=f(y)+\langle \lambda,g(y)\rangle} 
+We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function.
+So the dual problem of \ref{opt} can be written as \gs{
+    \sup_\lambda L(\lambda)\st \lambda\le_{K^*}  0\label{optt}\tag{$P^*$}
+}  In the hemispace case, the polar cone and dual cone is $$H^0=[0,\infty]^p\times \bar\R^q,H^*=-H^0=[-\infty,0]^p\times \bar\R^q$$
 
-\section{Constraint qualifications}
- The tangent cone $\mathcal{T}(x)$ (in the sense of the paratingent cone or contingent cone of Bouligand) at a feasible point $x$ consists of all directions $d$ such that there is a feasible sequence $x_k\to x$ and positive numbers$t_k$ s.t. $$(x_k-x)/t_k\to d$$
- This should be equivalent to feasible directions $d$ s.t. \gs{\liminf_{t\to 0+}\frac{
- d(x+td,C)}{t} =0}  If the feasible set is convex, $\mathcal{T}(x)$ is the closure of the cone consists of open rays that intersect nontrivially the feasible set.
 
- Cones of feasible directions defined above are not that computable. We need to introduce following linear approximations of $\mathcal{T}(x)$. At a fixed feasible point $x$, we rearrange the constraints $g=(g_1,g_2,g_3)$ s.t. $g_1=0,g_2,g_3\le 0$ and $g_2(x)=0,g_3(x)>0$, now the necessary constraints for a feasible direction is \gs{\mathcal{F}(x)=\kh{\nabla g_1,d}=0,\kh{\nabla g_2,d}\le 0} 
-This might be bigger than $\mathcal T(x)$, but if $g_1,g_2$ is regular at $x$ (namely its differential has full rank), then the level set $g_1=0,g_2\leq 0$ defines a manifold with corner near $x$. In this case $\mathcal{T}=\mathcal{F}$ 
+\section{Tangent cone and constraint qualifications}
+ The tangent cone $\mathcal{T}(x)$ (in the sense of the paratingent cone or contingent cone of Bouligand) at a feasible point $x$ consists of all directions $d$ such that there is a feasible sequence $x_k\to x$ and positive numbers $t_k$ s.t. $$(x_k-x)/t_k\to d$$
+ This should be equivalent to \gs{\T(x):=\hk{d:\liminf_{t\to 0+}\frac{
+ d(x+td,C)}{t} =0}}  If the feasible set is convex, $\mathcal{T}(x)$ is the closure of the cone consists of open rays that intersect nontrivially the feasible set.
+
+ Cones of feasible directions defined above are not that computable. We need to introduce following linear approximations of $\mathcal{T}(x)$.
+
+
+ For simplicity, we restricted ourself to the case when the cone $K$ is the simpliest manifold with corner $H$ from now on, i.e. we are considering the problem $$\inf_x f(x) \st g(x)\le 0, h(x)=0$$
+
+
+ At a fixed feasible point $x$, we rearrange the constraints $g=(g_1,g_2)$   s.t. $g_1(x)=0,g_2(x)< 0$, so we say $g_1,h$ are active constraints, and $g_2$ is inactive in a neighborhood of $x$. The necessary condition for a feasible direction is \gs{\mathcal{F}(x)=\hk{d:\kh{\nabla h,d}=0,\kh{\nabla g_1,d}\le 0}}
+This might be bigger than $\mathcal T(x)$, for example the linearized cone of feasible directions of the constraints $g_1(x)=x^3\le 0$ or $h(x)=x^3=0$ will give false feasible direction at $0$. But if $g_1,h$ is regular at $x$ (namely its differential has full rank), then the level set $g_1=0,g_2\leq 0$ defines a manifold with corner near $x$. In this case $\mathcal{T}(x)=\mathcal{F}(x)$. We say Linear independence constraint qualification(\textbf{LICQ}) holds at $x$ if the gradients of active constraints are linearly independent. 
+
+There are many other constraint qualifications, for example, we actually do not need $(\nabla g_1,\nabla h)$ to have full rank, constant rank theorem tells us that it suffices the rank of each subset of the gradients of the active constraints at a vicinity of 
+$x$ is constant(\textbf{CRCQ}). 
+A special case of these is linear constraints qualification(\textbf{LCQ}), when $g_1,h$ are affine functions.
+
+We also say Mangasarian-Fromovitz constraint qualification (\textbf{MFCQ}) holds at $x$ if the gradients $\nabla h$ of equality constraints are linearly independent and there is a direction $d$ s.t. $\kh{\nabla h,d}=0,\kh{\nabla g_1,d}< 0$ at $x$.  
 
 \def\ri{\mathbf{relint}}
 
-For linear optimization, the strong duality always holds.
+\section{Optimazation condition}
+\subsection{Karush-Kubn-Tucker condition}
+At a local minima, either the function doesn't descent, or it meets the boundary of the feasible set. Thus if our linearized tangent cone is nice: $$\T(x)=\F(x)$$ then the following \gs{\kh{d,\nabla f}<0,\kh{d,\nabla h}=0,\kh{d,\nabla g_1}\le 0} cannot be true at the same time at $x$.
+
+Farkas lemma says these conditions are equivalent to the existence of $\lambda$ and nonnegative $\mu$ s.t. \gs{-\nabla f={\lambda \cdot\nabla h}+{\mu\cdot \nabla g_1}}(here I use $\cdot$ to distinguish the product w.r.t. the index of constraints with the inner product on space)
+To see this, consider the convex cone \gs{C=\hk{\lambda\cdot\nabla h+\mu\cdot\nabla g_1:\mu\ge 0}}the second and third conditions are equivalent to $-d\in C^*$, for any such $d$, $\kh{d,\nabla f}\ge 0$  thus $-\nabla f$ must lies in $C^{**}$. But the bidual of a closed convex cone is itself(by the hyperplane separation theorem), so $-\nabla f\in C$.
+
+Now we understand that a necessary condition for a local minima $x$ is the existence of $\lambda$ and nonnegative $\mu$ s.t.  satisfies $\p_x L(x,\lambda,\mu)=0$. We can put these conditions together with the information of active constraints:
+the \textbf{KKT condition} is
+\[
+\begin{aligned}
+&\text{Stationarity:} &&\p_x L(x,\lambda,\mu) \nabla f(x)+\lambda\cdot\nabla h(x)+\mu\cdot \nabla g(x)=0\\
+&\text{Primal feasibility:} && g(x)\le 0,\ h(x)=0\\
+&\text{Dual feasibility:} && \mu\ge 0\\
+&\text{Complementary slackness:} && \mu\cdot g(x)=0
+\end{aligned}
+\]
+
 
 
 First we define the relative interior $\ri(C)$ of a set $C$ as the interior of $C$ relative to its affine hull, which is the smallest affine space containing $C$. 
