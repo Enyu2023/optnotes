@@ -16,18 +16,28 @@
 \chapter{Optimization theory on linear spaces}
 These are brief notes based on chapter 5 and 6 of \cite{hu}. We consider the optimization problem for functions defined on subsets of linear spaces. The section on duality refers to chapter 4 of \cite{du} to illustrate an interesting relation between Fenchel duality and Lagrangian duality, which is also useful to generalize the case when constraints are proper cones. For simplicity, we only consider proper functions: taking values in $(-\infty, \infty]$ and not identically infinity. 
 
-\section{Optimization condition}
 
-\subsection{Existence and Uniqueness}
+\section{Existence and Uniqueness}
 
 It's well-known that if $f$ is lower semicontinuous and domain is compact, then $f$ has a minimum. Thus if a closed  sublevel set $C=\{f\le c\}$ is bounded and nonempty for some $c\in \mathbb{R}$, then $f$ has a minimum over $C$ hence has a global minimum. A typical example is when $f$ is coercive, i.e. $\lim_{|x|\to\infty}f(x)=\infty$, then the sublevel sets are bounded and nonempty for sufficiently large $c$.
 
 On the other hand, if $f$ is lower semicontinuous and strictly quasiconvex(for any segment connecting points of graph of $f$, the graph lies strictly below maximum of the endpoints; this implies the sublevel sets are strictly convex), then such minimum must be unique.
 
+
+\section{Optimization condition of unconstrained optimization}
+\def\hess{\mathrm{Hess}}
+
+The smooth case is well-known: if $f$ is differentiable, then a necessary condition for $x$ to be a local minimum point is $\nabla f(x)=0$ and  $\hess f(x)\succeq 0$ if $f$ is twice-differentiable, and a sufficient condition is $\nabla f(x)=0$ and $\hess f(x)$ is positive-definite. These conditions also applied to functions on manifolds.
+
+If the function is convex, then the necessary and sufficient condition for $x$ to be a global minimum point is $0\in \p f(x)$. This is necessary even if $f$ is not convex, with the definition of subdifferential suitably generalized.
+
 \section{Duality theory}
+
+From now on we consider the optimization problem with constraints, the duality theory is very useful to understand the optimality condition of such problems. The idea is to convert the problem to dual problem with better constraints and computable optimization condition.
+
 \subsection{Fenchel duality}  
 
-So basically we are extending Legendre transform to general cases: the Frenchel dual of $f$ is defined as $$f^*(y)=\sup_x {\langle x,y\rangle -f(x)}$$It can be understood as the restriction of the support function of the epigraph of $f$: $$f^*(y)=\sup_{(x,t)\in \text{epi}(f)} \langle (x,t),(y,-1)\rangle$$which basically detects the shape of epigraph $f$ by its supporting hyperplanes (although this only record information of its convex hull).
+So basically we are extending Legendre transform to general cases: the Frenchel dual of $f$ is defined as $$f^*(y)=\sup_x {\langle x,y\rangle -f(x)}$$It can be understood as the restriction of the support function of the epigraph of $f$: $$f^*(y)=\sup_{(x,t)\in \text{epi}(f)} \langle (x,t),(y,-1)\rangle$$which detects the shape of epigraph $f$ by its supporting hyperplanes (although this only record information of its convex hull).
 This dual function is always convex and lower-semicontinuous as they are of a supremum of affine functions, and we have the Fenchel inequality: $$f(x)+f^*(y)\geq \langle x,y\rangle$$
 which immediately implies that the bidual $f^{**}\le f$. If $f$ is convex and lower-semicontinuous, then we have $f^{**}=f$. This is easy if we assume subdifferential exists, in which case we have nice summetry for points $(x,y)$ that equalizing the  Frenchel inequality: $x\in\partial f^*(y), y\in \partial f(x)$. Also, $*$ is order reversing, so in general, $f^{**}$ is the largest lower-semicontinuous convex function that is less than or equal to $f$, i.e. epigraph of $f^{**}$ is the convex hull of epigraph of $f$. 
 
@@ -56,14 +66,16 @@ A constrained optimization problem is \gs{\inf_x f(x) \st g(x)\ge_K 0\label{opt}
 
 Let's apply the insight of the last section to $F$. We consider the perturbation \gs{F(x,\lambda)= f(x)+I_K(g(x)+\lambda)}Then \gs{-F^*(0,\lambda)=&\inf_{y,s} \left( -\langle \lambda,s \rangle +f(y)+I_K(g(y)+s) \right)\\=&\inf_{y,r} \left( -\langle \lambda, r -g(y)\rangle +f(y)+I_K(r)\right)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_K^*(\lambda)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_{K^0}(\lambda)
 }
-Consider the Lagrangian:\gs{L(y,\lambda)=f(y)+\langle \lambda,g(y)\rangle} 
-We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function.
+Consider the Lagrangian:\gs{L(y,\lambda)=f(y)+\langle \lambda,g(y)\rangle} It can be under stood as an approximation of the original function $F(x)=f(x)+I_K(g(x))$ by a family of linear functions.
+We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function. 
 So the dual problem of \ref{opt} can be written as \gs{
     \sup_\lambda L(\lambda)\st \lambda\le_{K^*}  0\label{optt}\tag{$P^*$}
 }  In the hemispace case, the polar cone and dual cone is $$H^0=[0,\infty]^p\times \bar\R^q,H^*=-H^0=[-\infty,0]^p\times \bar\R^q$$
 
 
-\section{Tangent cone and constraint qualifications}
+\section{Optimization condition for general constraints}
+\subsection{Tangent cone and constraint qualifications}
+
  The tangent cone $\mathcal{T}(x)$ (in the sense of the paratingent cone or contingent cone of Bouligand) at a feasible point $x$ consists of all directions $d$ such that there is a feasible sequence $x_k\to x$ and positive numbers $t_k$ s.t. $$(x_k-x)/t_k\to d$$
  This should be equivalent to \gs{\T(x):=\hk{d:\liminf_{t\to 0+}\frac{
  d(x+td,C)}{t} =0}}  If the feasible set is convex, $\mathcal{T}(x)$ is the closure of the cone consists of open rays that intersect nontrivially the feasible set.
@@ -85,8 +97,7 @@ We also say Mangasarian-Fromovitz constraint qualification (\textbf{MFCQ}) holds
 
 \def\ri{\mathbf{relint}}
 
-\section{Optimazation condition}
-\subsection{Karush-Kubn-Tucker condition}
+\subsection{First order condition: Karush-Kubn-Tucker condition}
 At a local minima, either the function doesn't descent, or it meets the boundary of the feasible set. Thus if our linearized tangent cone is nice: $$\T(x)=\F(x)$$ then the following \gs{\kh{d,\nabla f}<0,\kh{d,\nabla h}=0,\kh{d,\nabla g_1}\le 0} cannot be true at the same time at $x$.
 
 Farkas lemma says these conditions are equivalent to the existence of $\lambda$ and nonnegative $\mu$ s.t. \gs{-\nabla f={\lambda \cdot\nabla h}+{\mu\cdot \nabla g_1}}(here I use $\cdot$ to distinguish the product w.r.t. the index of constraints with the inner product on space)
@@ -96,14 +107,18 @@ Now we understand that a necessary condition for a local minima $x$ is the exist
 the \textbf{KKT condition} is
 \[
 \begin{aligned}
-&\text{Stationarity:} &&\p_x L(x,\lambda,\mu) \nabla f(x)+\lambda\cdot\nabla h(x)+\mu\cdot \nabla g(x)=0\\
+&\text{Stationarity:} &&\p_x L(x,\lambda,\mu) =\nabla f(x)+\lambda\cdot\nabla h(x)+\mu\cdot \nabla g(x)=0\\
 &\text{Primal feasibility:} && g(x)\le 0,\ h(x)=0\\
 &\text{Dual feasibility:} && \mu\ge 0\\
 &\text{Complementary slackness:} && \mu\cdot g(x)=0
 \end{aligned}
 \]
 
+\subsection{
+    Second order condition
+}
 
+\section{Optimization condition for convex problems}
 
 First we define the relative interior $\ri(C)$ of a set $C$ as the interior of $C$ relative to its affine hull, which is the smallest affine space containing $C$. 
 
