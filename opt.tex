@@ -1,7 +1,8 @@
 
 \documentclass[a4paper]{mynotes}
-
-
+\def\redd#1{\textcolor{red}{#1}}
+\def\dom{\text{dom}}
+\def\ri{\mathbf{Relint}}
 \title{{\bfseries{Opt on manifold Notes}}}
 
 \author{{{Li Enyu}}}
@@ -14,7 +15,7 @@
 \tableofcontents
 
 \chapter{Optimization theory on linear spaces}
-These are brief notes based on chapter 5 and 6 of \cite{hu}. We consider the optimization problem for functions defined on subsets of linear spaces. The section on duality refers to chapter 4 of \cite{du} to illustrate an interesting relation between Fenchel duality and Lagrangian duality, which is also useful to generalize the case when constraints are proper cones. For simplicity, we only consider proper functions: taking values in $(-\infty, \infty]$ and not identically infinity. 
+These are brief notes based on chapters 5 of \cite{hu}. We consider optimization problems for functions defined on subsets of linear spaces. Some proofs are presented in a more geometric manner. The section on duality refers to chapter 4 of \cite{du} to illustrate an interesting relation between Fenchel duality and Lagrangian duality. For simplicity, we only consider proper functions: those taking values in $(-\infty, \infty]$ and not identically infinity. 
 
 
 \section{Existence and Uniqueness}
@@ -52,11 +53,21 @@ An important non-smooth example is the indicator function on some set $C$:
 \infty & x\notin C
 \end{cases}$$  we have $${I_C}^*(y)=\sup_{x\in C} \langle x,y\rangle-{I_C}(x)= \sup_{x\in C} \langle x,y\rangle $$ which is the support function of $C$. For a convex cone $C$, the dual of the support function is again a support function: $$I_C^*=I_{C^0}$$ where $$C^0=\{y:\langle x,y\rangle\le 0 \text{ for all } x\in C\}$$ is the polar cone of $C$.
 
-\subsection{Perturbation}
+\subsection{Perturbation}\label{sec:perturbation}
+This section refers to chapter VI of \cite{roc}. We consider a perturbation $F(x,\lambda)$ of $f$ such that $F(x,0)=f(x)$ and a family of optimization problem $p(\lambda)=\inf_x F(x,\lambda)$, then $$p^{*}(\lambda)= \sup_s \left( \langle \lambda, s \rangle - \inf_y F (y, s) \right)=\sup_{s,y} \left( \langle \lambda, s \rangle -F(y, s) \right)=F^*(0,\lambda)$$
+%thus 
+% \gs{F^{**}(x,0)=\sup_{y,\lambda} \left( \langle y, x \rangle - F^*(y,\lambda) \right)=(\inf_{\lambda} F^*)^*(x)}
+The primal program is $p(0)=\inf_x F(x,0)$, the dual program is
+\gs{p^{**}(0)=\sup_{\lambda} \left( \langle 0, \lambda \rangle - u^*(\lambda) \right)=\sup_\lambda \left( -F^*(0,\lambda) \right)=-\inf_\lambda F^*(0,\lambda)}This can be viewed as the promgram associated with $F^*$. 
 
-Now we consider a perturbation $F(x,\lambda)$ of $f$ such that $F(x,0)=f(x)$ and a family of optimization problem $p(\lambda)=\inf_x F(x,\lambda)$, then $$p^{*}(\lambda)= \sup_s \left( \langle \lambda, s \rangle - \inf_y F (y, s) \right)=\sup_{s,y} \left( \langle \lambda, s \rangle -F(y, s) \right)=F^*(0,\lambda)$$
-thus 
-\gs{p^{**}(0)=\sup_{\lambda} \left( \langle 0, \lambda \rangle - u^*(\lambda) \right)=\sup_\lambda \left( -F^*(0,\lambda) \right)=-\inf_\lambda F^*(0,\lambda)}We have weak duality \gs{\sup_\lambda\yk{- F^*(0,\lambda)}\le \inf_y F(y,0)} since $p^{**}(0)\le p(0)$ and $p(0)-p^{**}(0)$ is the duality gap. In some cases the gap is 0, we say strong duality holds.
+
+Henceforth, we omit the subscripts of $\inf$ and $\sup$, understanding that $\inf F(\lambda) := \inf_x F(x, \lambda)$ and $\inf F^*(x) := \inf_\lambda F(x, \lambda)$. For example we shall write $p=\inf F$ and $p^{**}=-\inf F^*$. We have weak duality \gs{\sup\yk{- F^*}(0)\le \inf F(0)} since $p^{**}(0)\le p(0)$ and $$p(0)-p^{**}(0)=\sup\yk{- F^*}-\inf F$$ is the duality gap. If the gap is 0(this happens if $p$ is convex and lower semicontinuous at $0$), we say strong duality holds.
+
+
+If $F$ is convex, then $p(\lambda)=\inf_{x\in C} F(x,\lambda)$ is always convex as long as $p>-\infty$. This is because the epigraph of $p$ is the projection of the epigraph of $F$, and the projection of a convex set is always convex. 
+
+
+ The relative interior $\ri(D)$ of a set $D$ is the interior of $D$ relative to its affine hull. Convex functions are continuous on the relative interior of their domain, so if $0\in \ri\yk{\text{dom} (p)}$, then $p$ is continuous at $0$. In this case, the strong duality holds since $p$ is continuous near $0$. In this case, we say the convex program is strongly consistent, so basically we have a nice perturbation of $f$.
 
 \subsection{Lagrangian duality}
 
@@ -66,36 +77,36 @@ A constrained optimization problem is \gs{\inf_x f(x) \st g(x)\ge_K 0\label{opt}
 
 Let's apply the insight of the last section to $F$. We consider the perturbation \gs{F(x,\lambda)= f(x)+I_K(g(x)+\lambda)}Then \gs{-F^*(0,\lambda)=&\inf_{y,s} \left( -\langle \lambda,s \rangle +f(y)+I_K(g(y)+s) \right)\\=&\inf_{y,r} \left( -\langle \lambda, r -g(y)\rangle +f(y)+I_K(r)\right)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_K^*(\lambda)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_{K^0}(\lambda)
 }
-Consider the Lagrangian:\gs{L(y,\lambda)=f(y)+\langle \lambda,g(y)\rangle} It can be under stood as an approximation of the original function $F(x)=f(x)+I_K(g(x))$ by a family of linear functions.
-We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function. 
-So the dual problem of \ref{opt} can be written as \gs{
-    \sup_\lambda L(\lambda)\st \lambda\le_{K^*}  0\label{optt}\tag{$P^*$}
+Consider the Lagrangian:\gs{L(y,\lambda)=f(y)+\langle \lambda,g(y)\rangle} It can be under stood as an approximation of the original function $F(x)=f(x)+I_K(g(x))$ by a family of linear functions. 
+We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function.
+
+Now we can write \gs{-p^*(\lambda)=-F^*(0,\lambda)=\inf_y L(y,\lambda)-I_{K^0}(\lambda)=L(y)-I_{K^0}(\lambda)}
+The dual program of \ref{opt} is to minimize $-p^*$, it can be written as \gs{
+    \inf_\lambda (L(\lambda))\st \lambda\le_{K^*}  0\label{optt}\tag{$P^*$}
 }  In the hemispace case, the polar cone and dual cone is $$H^0=[0,\infty]^p\times \bar\R^q,H^*=-H^0=[-\infty,0]^p\times \bar\R^q$$
 
+There is a more genral duality theorem\cite{roc}: one have \gs{\inf (f-g)=\sup\yk{ g_*-f^*}}when $f,g,f-g$ are proper. \redd{TBA}
 
 \section{Optimization condition for general constraints}
 \subsection{Tangent cone and constraint qualifications}
-
+\def\F{\mathfrak{T}}
  The tangent cone $\mathcal{T}(x)$ (in the sense of the paratingent cone or contingent cone of Bouligand) at a feasible point $x$ consists of all directions $d$ such that there is a feasible sequence $x_k\to x$ and positive numbers $t_k$ s.t. $$(x_k-x)/t_k\to d$$
  This should be equivalent to \gs{\T(x):=\hk{d:\liminf_{t\to 0+}\frac{
- d(x+td,C)}{t} =0}}  If the feasible set is convex, $\mathcal{T}(x)$ is the closure of the cone consists of open rays that intersect nontrivially the feasible set.
+ d(x+td,C)}{t} =0}}   If the feasible set is convex, $\mathcal{T}(x)$ is the closure of the cone consists of open rays that intersect nontrivially the feasible set.
 
- Cones of feasible directions defined above are not that computable. We need to introduce following linear approximations of $\mathcal{T}(x)$.
-
+ Cones of feasible directions defined above are not that computable. We need to introduce following linear approximations of $\mathcal{T}(x)$. Geometrically, these are \gs{\F(x)=(dF)^{-1}(\T_{g(x)}K)} where $g$ is the constraint function and $\T_{g(x)}K$ is the tangent cone of the constraint set at $g(x)$. In general, we have $\mathcal{T}(x)\subset \F(x)$, and the equality holds if the constraint is regular at $x$.
 
  For simplicity, we restricted ourself to the case when the cone $K$ is the simpliest manifold with corner $H$ from now on, i.e. we are considering the problem $$\inf_x f(x) \st g(x)\le 0, h(x)=0$$
 
 
- At a fixed feasible point $x$, we rearrange the constraints $g=(g_1,g_2)$   s.t. $g_1(x)=0,g_2(x)< 0$, so we say $g_1,h$ are active constraints, and $g_2$ is inactive in a neighborhood of $x$. The necessary condition for a feasible direction is \gs{\mathcal{F}(x)=\hk{d:\kh{\nabla h,d}=0,\kh{\nabla g_1,d}\le 0}}
-This might be bigger than $\mathcal T(x)$, for example the linearized cone of feasible directions of the constraints $g_1(x)=x^3\le 0$ or $h(x)=x^3=0$ will give false feasible direction at $0$. But if $g_1,h$ is regular at $x$ (namely its differential has full rank), then the level set $g_1=0,g_2\leq 0$ defines a manifold with corner near $x$. In this case $\mathcal{T}(x)=\mathcal{F}(x)$. We say Linear independence constraint qualification(\textbf{LICQ}) holds at $x$ if the gradients of active constraints are linearly independent. 
+ At a fixed feasible point $x$, we rearrange the constraints $g=(g_1,g_2)$   s.t. $g_1(x)=0,g_2(x)< 0$, so we say $g_1,h$ are active constraints, and $g_2$ is inactive in a neighborhood of $x$. The necessary condition for a feasible direction is \gs{\F(x)=\hk{d:\kh{\nabla h,d}=0,\kh{\nabla g_1,d}\le 0}}
+This might be bigger than $\mathcal T(x)$, for example the linearized cone of feasible directions of the constraints $g_1(x)=x^3\le 0$ or $h(x)=x^3=0$ will give false feasible direction at $0$. But if $g_1,h$ is regular at $x$ (namely its differential has full rank), then the level set $g_1=0,g_2\leq 0$ defines a manifold with corner near $x$. In this case $\mathcal{T}(x)=\F(x)$. We say Linear independence constraint qualification(\textbf{LICQ}) holds at $x$ if the gradients of active constraints are linearly independent. 
 
-There are many other constraint qualifications, for example, we actually do not need $(\nabla g_1,\nabla h)$ to have full rank, constant rank theorem tells us that it suffices the rank of each subset of the gradients of the active constraints at a vicinity of 
-$x$ is constant(\textbf{CRCQ}). 
-A special case of these is linear constraints qualification(\textbf{LCQ}), when $g_1,h$ are affine functions.
+We actually do not need $(\nabla g_1,\nabla h)$ to have full rank, constant rank theorem tells us that it suffices the rank of each subset of the gradients of the active constraints at a vicinity of 
+$x$ is constant(\textbf{CRCQ}). In this case, for a fixed $d\in\F(x)$, the active constraints with vanishing gradient along $d$ will contains a submanifold that tangent to $d$, thus we can choose a curve along $d$ that lies within such submanifold, while the rest of the active constraints with non-vanishing gradient along $d$ will become inactive along such curve. A special case of these is linear constraints qualification(\textbf{LCQ}), when $g_1,h$ are affine functions.
 
-We also say Mangasarian-Fromovitz constraint qualification (\textbf{MFCQ}) holds at $x$ if the gradients $\nabla h$ of equality constraints are linearly independent and there is a direction $d$ s.t. $\kh{\nabla h,d}=0,\kh{\nabla g_1,d}< 0$ at $x$.  
+We also say Mangasarian-Fromovitz constraint qualification (\textbf{MFCQ}) holds at $x$ if the gradients $\nabla h$ of equality constraints are linearly independent and there is a direction $d_0$ s.t. $\kh{\nabla h,d_0}=0,\kh{\nabla g_1,d_0}< 0$ at $x$. In this case we choose curves  $x(t,s)$ along $d+s d_0$ that lies within the submanifold defined by $h=0$, in orther words $$x(t,s)-x(0,0)=(d+s d_0)(t+o(t))$$now $x(t,t)$ will be a curve in the feasible set along $d$. 
 
-\def\ri{\mathbf{relint}}
 
 \subsection{First order condition: Karush-Kubn-Tucker condition}
 At a local minima, either the function doesn't descent, or it meets the boundary of the feasible set. Thus if our linearized tangent cone is nice: $$\T(x)=\F(x)$$ then the following \gs{\kh{d,\nabla f}<0,\kh{d,\nabla h}=0,\kh{d,\nabla g_1}\le 0} cannot be true at the same time at $x$.
@@ -113,20 +124,52 @@ the \textbf{KKT condition} is
 &\text{Complementary slackness:} && \mu\cdot g(x)=0
 \end{aligned}
 \]
+$(\lambda,\mu)$ are called the KKT multipliers. The KKT condition is necessary for local optimality if the linearized cone of feasible directions is nice, which amounts to verify various constraint qualifications.
 
 \subsection{
     Second order condition
 }
 
 \section{Optimization condition for convex problems}
+\subsection{Slater's qualification and strong duality}
 
-First we define the relative interior $\ri(C)$ of a set $C$ as the interior of $C$ relative to its affine hull, which is the smallest affine space containing $C$. 
+
+Now we consider the problem \ref{opt} with convex objective function and affine equality and convex inequality constraints:\gs{
+\min_{x\in D} f(x) \st  g(x)\le 0, Ax=b
+}where $f$ is proper and convex, $g$ is convex and $A$ is a linear map. As before, for convex problems we do not require the function to be differentiable. The perturbation of this problem is \gs{F(x,\lambda,\mu)=f(x)+I_H((g(x), Ax-b)+(\lambda,\mu))} where $H=[-\infty,0]^p\times \bar\R^q$ is the hemispace. The Lagrangian function is\gs{L(x,\lambda,\mu)=f(x)+\lambda\cdot (Ax-b)+\mu\cdot g(x)}and
+\gs{p(\lambda,\mu)=\inf_x\yk{ f(x)+I_H((g(x), Ax-b)+(\lambda,\mu))}}
+and dual function
+\gs{p^*(\lambda,\mu)=-L(\lambda,\mu)+I_{H^0}(\lambda,\mu)}
+ Recall our dicussion on perturbation and strong duality in \ref{sec:perturbation}. The condition $0\in \ri\yk{\text{dom}(p)} $ is equivalent to the following condition: there is a point $x$ s.t. $g_0(x)=0,g_1(x)<0,Ax=b$ where $g_0$ is the affine part of $g$. This is the \textbf{Relaxed Slater's qualification} for the problem \ref{opt}. 
+A special case is when $x\in \mathbf{Int}(\dom(p))$, this is equivalent to \textbf{Slater's qualification} $$  g(x)<0,Ax=b  $$ 
+ In these cases, the strong duality holds since $p$ is continuous at $0$.
 
 
-When the perturbation $F$ is convex and lower-semicontinuous  (this happens iff $F^{**}=F$), the strong duality holds since the function.  
+\subsection{Convex KKT}
+When Slater's condition holds, the strong duality holds, and the KKT condition is necessary and sufficient for optimality. Note that MFCQ is a special case of this.
 
-\chapter{Algorithms for unconstrained optimization}
-\chapter{Unconstrained optimization}
+The KKT condition for convex problems is the same as before but with the differential replaced by subdifferential:
+\[\begin{aligned}
+&\text{Stationarity:} &&0\in \partial_x         L(x,\lambda,\mu) =\partial f(x)+\lambda\cdot\nabla A+\mu\cdot \nabla g(x)\\  
+&\text{Primal feasibility:} && g(x)\le 0,\ Ax=b\\
+&\text{Dual feasibility:} && \mu\ge 0\\ 
+&\text{Complementary slackness:} && \mu\cdot g(x)=0
+\end{aligned}\]
+
+We shall show that under Slater's condition, the KKT condition is sufficient and necessary for optimality. (\redd{TBA})
+
+
+
+
+\chapter{Algorithms}
+\section{First order algorithms}
+\subsection{Gradient descent}
+\subsection{Barzilai-Borwein}
+\section{Second order algorithms}
+\subsection{Newtonian}
+\subsection{Trust-region method}
+\section{Stochastic gradient descent}
+
 \chapter{First order optimization on manifolds}
  
 These are notes for chapter 4 and 11 of \cite{boumal2023introduction}.
@@ -199,9 +242,13 @@ If we have some algorithm s.t. $f(x_k)-f(x_{k-1})$ is non-increasing, then we ca
 
 \bibitem{boumal2023introduction} Nicolas Boumal. An introduction to optimization on smooth manifolds. Cambridge University Press, 2023.
 
-\bibitem{hu} Hu, W. (2024). Optimization on Manifolds. In Optimization on Manifolds (pp. 1-20). Springer, Cham.
+\bibitem{hu} Hu, J., Liu, X., Wen, ZW. et al. A Brief Introduction to Manifold Optimization. J. Oper. Res. Soc. China 8, 199-248 (2020).
 
-\bibitem{du} The section on duality refers to Convex Optimization Theory by Dimitri P. Bertsekas\end{thebibliography}
+\bibitem{du} Dimitri P. Bertsekas. Convex Optimization Theory. Athena Scientific, 2009.
+
+\bibitem{roc} Rockafellar, R. T. Convex Analysis. Princeton University Press, 1970.
+
+\end{thebibliography}
 \printindex
 
 \end{document}
