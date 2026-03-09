@@ -1,5 +1,5 @@
-
 \documentclass[a4paper]{mynotes}
+\usepackage{CJKutf8}
 \def\redd#1{\textcolor{red}{#1}}
 \def\dom{\text{dom}}
 \def\ri{\mathbf{Relint}}
@@ -15,7 +15,7 @@
 \tableofcontents
 
 \chapter{Optimization theory on linear spaces}
-These are brief notes based on chapters 5 of \cite{hu}. We consider optimization problems for functions defined on subsets of linear spaces. Some proofs are presented in a more geometric manner. The section on duality refers to chapter 4 of \cite{du} to illustrate an interesting relation between Fenchel duality and Lagrangian duality. For simplicity, we only consider proper functions: those taking values in $(-\infty, \infty]$ and not identically infinity. 
+These are brief notes based on chapters 5 of \cite{optmodel} and chapter 4 and 5 of \cite{boyd}. We consider optimization problems for functions defined on subsets of linear spaces. Some proofs are presented in a geometric manner. The section on duality refers to chapter 4 of \cite{du} to illustrate an interesting relation between Fenchel duality and Lagrangian duality. For simplicity, we only consider proper functions: those taking values in $(-\infty, \infty]$ and not identically infinity. 
 
 
 \section{Existence and Uniqueness}
@@ -58,7 +58,7 @@ This section refers to chapter VI of \cite{roc}. We consider a perturbation $F(x
 %thus 
 % \gs{F^{**}(x,0)=\sup_{y,\lambda} \left( \langle y, x \rangle - F^*(y,\lambda) \right)=(\inf_{\lambda} F^*)^*(x)}
 The primal program is $p(0)=\inf_x F(x,0)$, the dual program is
-\gs{p^{**}(0)=\sup_{\lambda} \left( \langle 0, \lambda \rangle - u^*(\lambda) \right)=\sup_\lambda \left( -F^*(0,\lambda) \right)=-\inf_\lambda F^*(0,\lambda)}This can be viewed as the promgram associated with $F^*$. 
+\gs{p^{**}(0)=\sup_{\lambda} \left( \langle 0, \lambda \rangle - u^*(\lambda) \right)=\sup_\lambda \left( -F^*(0,\lambda) \right)=-\inf_\lambda F^*(0,\lambda)}This can be viewed as the promgram associated with $F^*$. If the bidual $F^{**}=F$, then $(P^{**})=(P)$.
 
 
 Henceforth, we omit the subscripts of $\inf$ and $\sup$, understanding that $\inf F(\lambda) := \inf_x F(x, \lambda)$ and $\inf F^*(x) := \inf_\lambda F(x, \lambda)$. For example we shall write $p=\inf F$ and $p^{**}=-\inf F^*$. We have weak duality \gs{\sup\yk{- F^*}(0)\le \inf F(0)} since $p^{**}(0)\le p(0)$ and $$p(0)-p^{**}(0)=\sup\yk{- F^*}-\inf F$$ is the duality gap. If the gap is 0(this happens if $p$ is convex and lower semicontinuous at $0$), we say strong duality holds.
@@ -73,19 +73,24 @@ If $F$ is convex, then $p(\lambda)=\inf_{x\in C} F(x,\lambda)$ is always convex 
 
 It is heuristic to consider the smooth case first. Suppose we have a constrained optimization problem $$\min_{x\in C} f(x) \text{ s.t. } g(x)=0$$  If $g$ has constant rank, then the first order condition is that $df$ annihilates the tangent space $\ker dg$, this happens iff $df=\langle\lambda, dg\rangle$ dualizing via a metric, we see  $$\nabla f(x)=\lambda \nabla g(x)$$ It has exactly the same first order optimization condition as the unconstrained minimizing problem of Lagrangian function $$L(x,\lambda)=f(x)+\lambda g(x)$$
 
-A constrained optimization problem is \gs{\inf_x f(x) \st g(x)\ge_K 0\label{opt}\tag{$P$}} where $K$ is a convex cone, for example a hemispace $H=[-\infty,0]^p\times \bar \{0\}^q$ We can convert the problem to an unconstrained optimization for $$F(x)= f(x)+I_K(g(x)) $$ where $I_K$ is the indicator function on $K$. 
+A constrained optimization problem is \gs{\inf_x f(x) \st g(x)\ge_K 0\label{opt}\tag{$P$}} where $K$ is a convex cone, for example a hemispace $H=[-\infty,0]^p\times  \{0\}^q$ We can convert the problem to an unconstrained optimization for $$F(x)= f(x)+I_K(g(x)) $$ where $I_K$ is the indicator function on $K$. 
 
 Let's apply the insight of the last section to $F$. We consider the perturbation \gs{F(x,\lambda)= f(x)+I_K(g(x)+\lambda)}Then \gs{-F^*(0,\lambda)=&\inf_{y,s} \left( -\langle \lambda,s \rangle +f(y)+I_K(g(y)+s) \right)\\=&\inf_{y,r} \left( -\langle \lambda, r -g(y)\rangle +f(y)+I_K(r)\right)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_K^*(\lambda)\\=&\inf_{y}\yk{f(y)+\langle \lambda,g(y)\rangle} -I_{K^0}(\lambda)
 }
-Consider the Lagrangian:\gs{L(y,\lambda)=f(y)+\langle \lambda,g(y)\rangle} It can be under stood as an approximation of the original function $F(x)=f(x)+I_K(g(x))$ by a family of linear functions. 
+Consider the Lagrangian:\gs{L(y,\lambda)=f(y)+\langle \lambda,g(y)\rangle}with $\lambda\in K^0$ in mind. It can be under stood as an approximation of the original function $F(x)=f(x)+I_K(g(x))$ by a family of linear functions. 
 We call \gs{L(\lambda)=\inf_y L(y,\lambda)}the Lagrangian dual function.
 
 Now we can write \gs{-p^*(\lambda)=-F^*(0,\lambda)=\inf_y L(y,\lambda)-I_{K^0}(\lambda)=L(y)-I_{K^0}(\lambda)}
-The dual program of \ref{opt} is to minimize $-p^*$, it can be written as \gs{
-    \inf_\lambda (L(\lambda))\st \lambda\le_{K^*}  0\label{optt}\tag{$P^*$}
+The dual program of \ref{opt} is to minimize $p^*$, it can be written as \gs{
+    \sup_\lambda (L(\lambda))\st \lambda\le_{K^*}  0\label{optt}\tag{$P^*$}
 }  In the hemispace case, the polar cone and dual cone is $$H^0=[0,\infty]^p\times \bar\R^q,H^*=-H^0=[-\infty,0]^p\times \bar\R^q$$
+ 
+One can also interpret the Lagrangian dual from the perspective of minimax theory: 
+\gs{\sup_{\lambda\in K^0} L(\lambda)=\sup_\lambda \inf_y \yk{L(y,\lambda)-I_{K^0}(\lambda)}\le \inf_y \sup_\lambda\yk{ L(y,\lambda)-I_{K^0}(\lambda)}=\inf_{g(y)\in K} f(y)}with equality at a saddle point of $L(y,\lambda), \lambda\in K^0$, in this case strong duality holds. 
 
-There is a more genral duality theorem\cite{roc}: one have \gs{\inf (f-g)=\sup\yk{ g_*-f^*}}when $f,g,f-g$ are proper. \redd{TBA}
+We shall see later that for convex problems, a saddle point will always be an optimal vector, the converse also true if Slater's condition holds.
+
+There is a more genral duality theorem\cite{roc}: one have \gs{\inf (f-g)=\sup\yk{ g_*-f^*}}when $f,g,f-g$ are proper convex. \redd{TBA}
 
 \section{Optimization condition for general constraints}
 \subsection{Tangent cone and constraint qualifications}
@@ -126,9 +131,13 @@ the \textbf{KKT condition} is
 \]
 $(\lambda,\mu)$ are called the KKT multipliers. The KKT condition is necessary for local optimality if the linearized cone of feasible directions is nice, which amounts to verify various constraint qualifications.
 
+The KKT condition is also natural in terms of the Lagrangian duality: it's the first order condition of the dual problem \gs{\sup_{\lambda,\mu\in K^0}\inf_x L(x,\lambda,\mu)}
+Thus, KKT conditions are necessary if the strong duality holds.
 \subsection{
     Second order condition
 }
+The cone of critical directions is defined as \gs{\mathcal{C}(x)=\hk{d\in\F,\kh{d,\nabla g_1}=0}} A second order necessary condition for local optimality at a KKT point $(x,\lambda,\mu)$ is that $\hess_x L(x,\lambda,\mu)$ is positive semidefinite on $\mathcal{C}(x)$. A second order sufficient condition for local optimality is that $\hess L(x,\lambda,\mu)$ is positive definite on $\mathcal{C}(x)$.
+
 
 \section{Optimization condition for convex problems}
 \subsection{Slater's qualification and strong duality}
@@ -140,23 +149,26 @@ Now we consider the problem \ref{opt} with convex objective function and affine 
 \gs{p(\lambda,\mu)=\inf_x\yk{ f(x)+I_H((g(x), Ax-b)+(\lambda,\mu))}}
 and dual function
 \gs{p^*(\lambda,\mu)=-L(\lambda,\mu)+I_{H^0}(\lambda,\mu)}
- Recall our dicussion on perturbation and strong duality in \ref{sec:perturbation}. The condition $0\in \ri\yk{\text{dom}(p)} $ is equivalent to the following condition: there is a point $x$ s.t. $g_0(x)=0,g_1(x)<0,Ax=b$ where $g_0$ is the affine part of $g$. This is the \textbf{Relaxed Slater's qualification} for the problem \ref{opt}. 
+ Recall our dicussion on perturbation and strong duality in \ref{sec:perturbation}. The condition $0\in \ri\yk{\text{dom}(p)} $ is equivalent to the following condition: there is a point $x$ s.t. \gs{g_0(x)=0,g_1(x)<0,Ax=b} where $g_0$ is the affine part of $g$. This is the \textbf{Relaxed Slater's qualification} for the problem \ref{opt}. 
 A special case is when $x\in \mathbf{Int}(\dom(p))$, this is equivalent to \textbf{Slater's qualification} $$  g(x)<0,Ax=b  $$ 
  In these cases, the strong duality holds since $p$ is continuous at $0$.
 
 
 \subsection{Convex KKT}
-When Slater's condition holds, the strong duality holds, and the KKT condition is necessary and sufficient for optimality. Note that MFCQ is a special case of this.
+When Slater's condition holds, the strong duality holds, we have seen that if the functions are differentiable, the KKT condition is necessary for optimality. Note that MFCQ is a special case of this.
 
-The KKT condition for convex problems is the same as before but with the differential replaced by subdifferential:
+The convex case is slightly different. The KKT condition for convex problems is the same as before but with the differential replaced by subdifferential:
 \[\begin{aligned}
-&\text{Stationarity:} &&0\in \partial_x         L(x,\lambda,\mu) =\partial f(x)+\lambda\cdot\nabla A+\mu\cdot \nabla g(x)\\  
+&\text{Stationarity:} &&0\in \partial_x         L(x,\lambda,\mu) =\partial f(x)+\lambda\cdot A+\mu\cdot \p g(x)\\  
 &\text{Primal feasibility:} && g(x)\le 0,\ Ax=b\\
 &\text{Dual feasibility:} && \mu\ge 0\\ 
 &\text{Complementary slackness:} && \mu\cdot g(x)=0
 \end{aligned}\]
 
-We shall show that under Slater's condition, the KKT condition is sufficient and necessary for optimality. (\redd{TBA})
+ Convex KKT is sufficient for strong duality and optimazation. At the KKT point $L(x,\lambda,\mu)=f(x)\geq \inf f$, which imlies the duality gap is zero and the solution is optimal.
+
+Under Slater's condition, the convex KKT condition is also necessary for optimality, but the proof should involve subdifferentials (\redd{TBA}). 
+ 
 
 
 
@@ -217,26 +229,7 @@ In manifold case, we can define (strongly) convexity and Lipschitz smoothness in
 
 An alternative way to define $\mu$-strong convexity is that $f(x)-f(y)-\mu\frac{d(x,y)^2}{2}$ being convex w.r.t. $x$. If $x,y$ is joined by a minimizing geodesic with velocity $s\in T_yM$, let $$D_f(x,y)=f(x)-f(y)-\langle \nabla f(y),s\rangle$$ we say $f$ is $\mu$-strongly convex if $D_f(x,y)\ge \frac{\mu}{2}d(x,y)^2$ where $d(\cdot,\cdot)$ is the Riemannian distance. This slightly different from the previous definition, but they are equivalent since the condition is essentially local: the function is ($\mu$-strongly) convex if and only if it is ($\mu$-strongly) convex at an open cover of $S$.
 
-If we assume further that the sublevel set $\{x:f(x)\le f(x_0)\}$ is compact, i.e.the function is lower-semicontinuous and proper, then the 
-
-Convex sets and functions are defined in terms of geodesic segments.
-
-
-
-
-
-
-
-
-
-
-
-
-
-If we have some algorithm s.t. $f(x_k)-f(x_{k-1})$ is non-increasing, then we can show convergence.
-
-
-% ...existing code...
+% If we assume further that the sublevel set $\{x:f(x)\le f(x_0)\}$ is compact, i.e.the function is lower-semicontinuous and proper, then the 
 
 \begin{thebibliography}{9}
 
@@ -246,9 +239,15 @@ If we have some algorithm s.t. $f(x_k)-f(x_{k-1})$ is non-increasing, then we ca
 
 \bibitem{du} Dimitri P. Bertsekas. Convex Optimization Theory. Athena Scientific, 2009.
 
+\bibitem{boyd} Stephen Boyd and Lieven Vandenberghe. Convex Optimization. Cambridge University Press, 2004.
+
 \bibitem{roc} Rockafellar, R. T. Convex Analysis. Princeton University Press, 1970.
 
+\begin{CJK*}{UTF8}{gkai}
+\bibitem{optmodel} 袁亮、黄红选、王晓军. \textit{最优化：建模、算法与理论}. 高教出版社, 2022.
+\end{CJK*}
 \end{thebibliography}
 \printindex
+
 
 \end{document}
