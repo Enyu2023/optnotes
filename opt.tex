@@ -20,7 +20,7 @@ These are brief notes based on chapters 5 of \cite{optmodel} and chapter 4 and 5
 
 \section{Existence and Uniqueness}
 
-It's well-known that if $f$ is lower semicontinuous and domain is compact, then $f$ has a minimum. Thus if a closed  sublevel set $C=\{f\le c\}$ is bounded and nonempty for some $c\in \mathbb{R}$, then $f$ has a minimum over $C$ hence has a global minimum. A typical example is when $f$ is coercive, i.e. $\lim_{|x|\to\infty}f(x)=\infty$, then the sublevel sets are bounded and nonempty for sufficiently large $c$.
+It's well-known that if $f$ is lower semicontinuous and domain is compact, then $f$ has a minimum: suppose its codomain does not have a minimal element, then the open cover\gs{\hk{f^{-1}(f(x),\infty]}} has finite subcover.\footnote{ Another way to put this: the funciton is lower semicontinuous iff it's continuous into $ \bar{\mathbb R}$ under right order topology, whose compact set has a minimal element} Thus if a closed  sublevel set $C=\{f\le c\}$ is bounded and nonempty for some $c\in \mathbb{R}$, then $f$ has a minimum over $C$ hence has a global minimum. A typical example is when $f$ is coercive, i.e. $\lim_{|x|\to\infty}f(x)=\infty$, then the sublevel sets are bounded and nonempty for sufficiently large $c$.
 
 On the other hand, if $f$ is lower semicontinuous and strictly quasiconvex(for any segment connecting points of graph of $f$, the graph lies strictly below maximum of the endpoints; this implies the sublevel sets are strictly convex), then such minimum must be unique.
 
@@ -60,12 +60,9 @@ This section refers to chapter VI of \cite{roc}. We consider a perturbation $F(x
 The primal program is $p(0)=\inf_x F(x,0)$, the dual program is
 \gs{p^{**}(0)=\sup_{\lambda} \left( \langle 0, \lambda \rangle - u^*(\lambda) \right)=\sup_\lambda \left( -F^*(0,\lambda) \right)=-\inf_\lambda F^*(0,\lambda)}This can be viewed as the promgram associated with $F^*$. If the bidual $F^{**}=F$, then $(P^{**})=(P)$.
 
-
 Henceforth, we omit the subscripts of $\inf$ and $\sup$, understanding that $\inf F(\lambda) := \inf_x F(x, \lambda)$ and $\inf F^*(x) := \inf_\lambda F(x, \lambda)$. For example we shall write $p=\inf F$ and $p^{**}=-\inf F^*$. We have weak duality \gs{\sup\yk{- F^*}(0)\le \inf F(0)} since $p^{**}(0)\le p(0)$ and $$p(0)-p^{**}(0)=\sup\yk{- F^*}-\inf F$$ is the duality gap. If the gap is 0(this happens if $p$ is convex and lower semicontinuous at $0$), we say strong duality holds.
 
-
 If $F$ is convex, then $p(\lambda)=\inf_{x\in C} F(x,\lambda)$ is always convex as long as $p>-\infty$. This is because the epigraph of $p$ is the projection of the epigraph of $F$, and the projection of a convex set is always convex. 
-
 
  The relative interior $\ri(D)$ of a set $D$ is the interior of $D$ relative to its affine hull. Convex functions are continuous on the relative interior of their domain, so if $0\in \ri\yk{\text{dom} (p)}$, then $p$ is continuous at $0$. In this case, the strong duality holds since $p$ is continuous near $0$. In this case, we say the convex program is strongly consistent, so basically we have a nice perturbation of $f$.
 
@@ -103,7 +100,6 @@ There is a more genral duality theorem\cite{roc}: one have \gs{\inf (f-g)=\sup\y
 
  For simplicity, we restricted ourself to the case when the cone $K$ is the simpliest manifold with corner $H$ from now on, i.e. we are considering the problem $$\inf_x f(x) \st g(x)\le 0, h(x)=0$$
 
-
  At a fixed feasible point $x$, we rearrange the constraints $g=(g_1,g_2)$   s.t. $g_1(x)=0,g_2(x)< 0$, so we say $g_1,h$ are active constraints, and $g_2$ is inactive in a neighborhood of $x$. The necessary condition for a feasible direction is \gs{\F(x)=\hk{d:\kh{\nabla h,d}=0,\kh{\nabla g_1,d}\le 0}}
 This might be bigger than $\mathcal T(x)$, for example the linearized cone of feasible directions of the constraints $g_1(x)=x^3\le 0$ or $h(x)=x^3=0$ will give false feasible direction at $0$. But if $g_1,h$ is regular at $x$ (namely its differential has full rank), then the level set $g_1=0,g_2\leq 0$ defines a manifold with corner near $x$. In this case $\mathcal{T}(x)=\F(x)$. We say Linear independence constraint qualification(\textbf{LICQ}) holds at $x$ if the gradients of active constraints are linearly independent. 
 
@@ -130,6 +126,8 @@ the \textbf{KKT condition} is
 \end{aligned}
 \]
 $(\lambda,\mu)$ are called the KKT multipliers. The KKT condition is necessary for local optimality if the linearized cone of feasible directions is nice, which amounts to verify various constraint qualifications.
+
+If we interpret $f$ as a potential field, the $g,h$ as (one-sided or two-sided) constaints, and the optimal problem as solving the equilibrium of the system, then the KKT condition is just the balance of forces: the potential force $\nabla f$ is balanced by the constraint forces $\lambda\cdot\nabla h+\mu\cdot \nabla g$. Of cource we need $\nabla g$ and $\nabla h$ to be nice enough to be able to stands for the normal forces of the constraints, which is exactly the constraint qualification condition. 
 
 The KKT condition is also natural in terms of the Lagrangian duality: it's the first order condition of the dual problem \gs{\sup_{\lambda,\mu\in K^0}\inf_x L(x,\lambda,\mu)}
 Thus, KKT conditions are necessary if the strong duality holds.
@@ -174,9 +172,92 @@ Under Slater's condition, the convex KKT condition is also necessary for optimal
 
 
 \chapter{Algorithms}
+I briefly summarize the algorithms for optimization problems in this chapter. 
 \section{First order algorithms}
-\subsection{Gradient descent}
+
+\section{Gradient descent}
+\subsection{Exact line search}
+We assume throughout the section that $f$ is diffenrentiable and attains a minimum $\inf f=f(x^\star)$. The idea of GD is simple:
+\gs{x_{k+1}=x_k-t_k\nabla f(x_k)} where $t_k$ is the step size.
+
+The real problem is how to choose the step size.  You can use \textbf{exact line search} to find the optimal step size at each step. i.e. \gs{t_k=\arg\min_{t>0} f(x_k-t\nabla f(x_k))} A very important example:
+\eg{Quadratic form}{ If we have a positive definite quadratic form\gs{f(x)=\frac{1}{2}\kh{x|A|x}=\frac{1}{2}|x|_A^2} then the optimal direction is $$d_k=-Ax_k$$ step size is 
+\gs{t_k=\frac{|{Ax_k}|^2}{|Ax_k|_A^2}\subset\fk{1/\sigma_1,1/\sigma_r}   }
+thus\gs{|x_{k+1}|_A^2=&|x_k-t_kAx_k|_A^2=|x_k|_A^2+t_k^2|Ax_k|_A^2-2t_k\kh{x_k|A|x_k}_A\\=&\yk{1-\frac{|{Ax_k}|^4}{\kh{Ax_k|A|Ax_k}\kh{x_k|A|x_k}} }|x_k|_A^2\\=&\yk{1-\frac{|{d_k}|^4}{\kh{d_k|A|d_k}\kh{d_k|A^{-1}|d_k}} }|x_k|_A^2
+}by
+Cauchy-Schwarz inequality (or in this case its called\textbf{ Kantorvich inequality}) for point
+\gs{(a,b)=\yk{\sum\sigma_j y_j^2,\sum_i\frac{y_i^2}{\sigma_i}}}
+ in the convex hull of the set $\hk{(\sigma_i,1/\sigma_i):i=1,\cdots,r}$, the maximal value of $a\times b$ lies on the middle point of the segment connecting $(\sigma_1,1/\sigma_1)$ and $(\sigma_r,1/\sigma_r)$, which is
+ \gs{b=-\frac{1}{\sigma_1\sigma_r}a+\frac{\sigma_1+\sigma_r}{\sigma_1\sigma_r}}
+ thus
+\gs{\yk{\sum_i\frac{y_i^2}{\sigma_i}}\yk{\sum\sigma_j y_j^2}\le \frac{\sigma_1+\sigma_r}{2\sigma_1\sigma_r}\sum y_i^2
+}
+As a consequence, we have \gs{|x_{k+1}|_A^2\le \yk{1-\yk{\frac{2\sigma
+_1\sigma_2}{\sigma_1+\sigma_2}}^2}|x_k|^2=\yk{\frac{\sigma_1-\sigma_r}{\sigma_1+\sigma_r}}^2|x_k|_A^2}
+so the sequence $x_k$ has a linear convergence rate with factor \gs{\yk{\frac{\kappa-1}{\kappa+1}}^2} where $\kappa$ is the condition number of $A$. When $\kappa=\frac{\sigma_1}{\sigma_r}$ is large, the shape of the graph of $f$ looks like a narrow valley, the convergence is very slow as the sequence gets zigzag in the valley.}
+
+We shall generalise these observations to functions with bounded Hessians, with $\sigma_1$ control the convexity and $\sigma_r$ control the smoothness of $f$.
+
+
+If $f$ is proper, $L$-smooth \gs{f(y)\le f(x)+\langle \nabla f(x),y-x\rangle+\frac{L}{2}\|y-x\|^2}
+If we are using the exact line search \gs{f(x_{k+1})\le f(x_k)-\frac{1}{2L}\|\nabla f(x_k)\|^2
+} 
+If $f$ is also $\mu$ convex, %using \ref{theo:Inequality for strong convex and Lipschitz smooth functions} 
+% \gs{
+%   f(x)-f(x^\star)\ge \frac{\mu L}{\mu+L}\|x-x^\star\|^2+\frac{1}{\mu+L}|\nabla f(x)|^2
+% }
+\gs{f(y)\ge f(x)+\langle \nabla f(x),y-x\rangle+\frac{\mu}{2}\|y-x\|^2\ge f(x)-\frac{1}{2\mu}|\nabla f|^2}
+% If you use \ref{theo:Inequality for strong convex and Lipschitz smooth functions} you get a better bound:\gs{
+%   f(x^\star)-f(x)\ge &\langle \nabla f(x),x^\star-x\rangle+ \frac{\mu L}{2(L+\mu)}\|x^\star-x\|^2+\frac{1}{2(\mu+L)}|\nabla f(x)|^2\\\ge&\frac{}{\mu L} 
+% }
+then\gs{ \kappa\yk{f(x_{k})-f(x_{k+1})}\ge  {f(x_k)-\inf f} }where $\kappa=\frac{L}{\mu}$ is the condition number of $\nabla^2f$.
+  It follows that
+  \gs{f(x_{k+1})-\inf f\le \frac{\kappa-1}{\kappa}\yk{f(x_k)-\inf f}} which means
+  the convergence is linear with factor $$1-\frac{\mu}{L}=\frac{\kappa-1}{\kappa}$$ which is close to $1$ for large $\kappa$.
+
+The bound rate of convergence we derived here is bigger than the quadratic case, but in fact it was proved in 2016 by Klerk et-al \cite{taylor} that the bound of the rate of convergence of exact line search is actually \gs{\yk{\frac{L-\mu}{L+\mu}}^2=\yk{\frac{\kappa-1}{\kappa+1}}^2
+} for the worst case.(\redd{TBA})
+\subsection{Back-track line search}
+In general, we use inexact line search methods. But first lets look at the case when we have a good guess of the Lipschitz constant $L$ of $\nabla f$.
+\lem{Descent lemma of objective values}{
+If $f$ is convex and $L$-smooth, $t_k\in[t_-,t_+]\subset (0,1/L]$:\gs{f(x_{{k
++1}})\le f(x^\star)+\frac{1}{2t_k}\|x_k-x^\star\|^2-\frac{1}{2t_k}\|x_{k+1}-x^\star\|^2
+}}
+\pff{
+\gs{f(x_{{k
++1}})\le &f(x_k)- t_k\|\nabla f(x_k)\|^2+\frac{L}{2}t_k^2\|\nabla f(x_k)\|^2\\\le& f(x^\star)+\kh{\nabla f(x_k),x_k-x^\star}-\frac{1}{2}t_k\|\nabla f(x_k)\|^2\\=&f(x^\star)+\kh{\nabla f(x_k),x-x^{\star}-\frac{1}{2}t_k \nabla f(x_k)  }\\=&f(x^\star)+\frac{1}{2t_k}\|x_k-x^\star\|^2-\frac{1}{2t_k}\|x_{k+1}-x^\star\|^2
+} 
+}
+As a consequence\gs{(k+1)t_-(f(x_k)-f(x^\star))\le \sum_k t_k(f(x_{k+1})- f(x^\star))\le \frac{1}{2}\|x_0-x^\star\|^2}and \gs{f(x_k)-f^\star\le \frac{|x_0-x^\star|^2}{2kt_-}} which implies the convergence rate is $O(1/k)$.  
+
+%From here we already know $$\sum_k t_k|\nabla f(x_k)|^2\le \frac{f(x_0)-\inf f}{r}$$ Once $\liminf_{k\to\infty} t_k>0$, we have $$\lim_{k\to\infty} |\nabla f(x_k)|^2=0$$and\gs{\min _{0\le k\le N}|\nabla f(x_k)|^2\le \frac{f(x_0)-\inf f}{r(N+1)\min_{0\le k\le N} t_k}} 
+
+As in the exact line search case, we have \thm{}{ If $f$ is $\mu$-convex and $L$-smooth, the stepsize are chosen so that $$t_k\in [t_-,t_+]\subset (0,2/\mu+L]$$ we have linear convergence rate:$$ {1-t_-\frac{2\mu L}{\mu+L}}\ge \yk{\frac{L-\mu}{L+\mu}}^2.$$  }
+Again note that the convergence rate has the same bound as exact line search. 
+\pff {We use the inequality in \ref{theo:Inequality for strong convex and Lipschitz smooth functions}:
+\gs{\kh{\nabla f(x)-\nabla f(y),x-y}\ge \frac{\mu L}{\mu+L}\|x-y\|^2+\frac{1}{\mu+L}|\nabla f(x)-\nabla f(y)|^2
+}to get
+\gs{|x_{k+1}-x^\star|^2=&|x_k-x^\star|^2-2t_k\kh{\nabla f(x_k),x_k-x^\star}+t_k^2|\nabla f(x_k)|^2\\\le& \yk{1-2t_k\frac{\mu L}{\mu+L}}|x_k-x^\star|^2
+}
+Also using\gs{f(x_{k+1})-f(x^\star)\le \frac{1}{2t_k}\yk{|x_k-x^\star|^2-|x_{k+1}-x^\star|^2}\le \frac{1}{2t_k}\yk{1-t_k\frac{2\mu L}{\mu+L}}^k|x_0-x^\star|^2
+}
+}
+\redd{TBA}
+
+
+
+
+But the problem is most of the time we don't know $L$ beforehand.
+To determine $t_k$, we use the\textbf{ back-track line search}. You start with a stepsize then reduce it by a factor $\tau\in(0,1)$ until the \textbf{Armijo condition} is satisfied \gs{f(x_k)-f(x_{k+1})\ge r t_k|\nabla f(x_k)|^2} where $r\in (0,1)$ is understood as the ratio of the real descent and expected descent. 
+We also assume our function is $L$-smooth:
+\gs{f(x_k)-f(x_{k+1})\ge t_k|\nabla f(x_k)|^2-\frac{L}{2}t_k^2|\nabla f(x_k)|^2} so the output of the backtrack line search is at most \gs{\frac{2(1-r)}{L}}thus the number of evaluations of $f$ and $\nabla f$ we need is $\sim\log_\tau \left(\frac{1-r}{L}\right)$. 
+
 \subsection{Barzilai-Borwein}
+
+In our model example \ref{exam:Quadratic form}, the step size is \gs{t_k=\frac{|{Ax_k}|^2}{|Ax_k|_A^2}} which is the inverse of the Rayleigh quotient of $A$ at $d_k$. The Barzilai-Borwein method is to use the same step size for general functions, i.e. 
+
+
+
 \section{Second order algorithms}
 \subsection{Newtonian}
 \subsection{Trust-region method}
@@ -231,6 +312,99 @@ An alternative way to define $\mu$-strong convexity is that $f(x)-f(y)-\mu\frac{
 
 % If we assume further that the sublevel set $\{x:f(x)\le f(x_0)\}$ is compact, i.e.the function is lower-semicontinuous and proper, then the 
 
+\appendix
+\chapter{Appendix A: Linear algebra}
+\section{Singular values}
+
+
+Consider an operator $A$, it will transform a sphere $$\kh{x,x}=1$$ to an ellipsoid $$|Ax|^2=\kh{x,A^*Ax}=\kh{Ax,Ax}$$ So we are looking at the quadratic form with matrice $A^*A$. The eigenvalue of $A^*A$ is the square of the semi-axes of the ellipsoid. We thus listed the square root of $A^*A$ in decreasing order $$(\sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r)$$ which are called the \textbf{singular values } of $A$. 
+
+
+The eigenvectors\gs{A^*Av=\sigma^2 v} are called the right singular vectors, they form an unitary basis of the domain.  The eigenvectors\gs{AA^*u=\sigma^2 u} are called the left singular vectors which form a unitary basis for the codomain. Not hard to see that $Av$ is a scalar multiple of a left singular vector, and $A^*u$ is a scalar multiple of a right singular vector. Thus if we choose these vectors as bases, the matrix of $A$ will be diagonal with singular values on the diagonal. As a consequence can always diagonalize $A$ by orthogonal transformations on the domain and target, i.e.  we have the following \textbf{SVD}$$A=U\Sigma V^*$$ where $U,V$ are unitary matrices and $\Sigma$ is a rectangular diagonal matrix with singular values lying on the 
+diagonal. 
+
+
+There is also a variational interpretation of singular values. Consider $$(u,v)\mapsto\kh{u,Av}$$ on the products of unit sphere with constraints $|u|^2=|v|^2=1$. Since the domain is compact we have at least one maximum. All extrema must satisfy the KKT condition \gs{{Av}=2\lambda_1u\\A^*u=2\lambda_2 v}
+which implies $\sigma=2\lambda_1=2\lambda$ and $u,v$ are left and right singular vectors. Now we use induction by consider the unitary complement of $u$ and $v$ to find the rest of the singular values.
+
+The \textbf{condition number} of $A$ is the ratio of the largest and smallest singular value\gs{\kappa =\frac{\sigma_1}{\sigma_r}} which can be viewed as a generalized eccentricity of the ellipsoid.
+
+\chapter{Appendix B: Convex analysis}
+\section{Strong convexity and Lipschitz smoothness}
+Throughout this section we assume $f$ is  continuously differentiable.
+The \textbf{Bregman divergence} or \textbf{Bregman distance} of $f$ is defined as
+\gs{D_f(x,y)=f(x)-f(y)-\langle \nabla f(y),x-y\rangle}  It measures how much $f$ deviates from its linear approximation at $y$. 
+It's symmetrized version is \gs{D_f(x,y)+D_f(y,x)=\langle \nabla f(x)-\nabla f(y),x-y\rangle}
+\defi{Strong convicity}{$f$ is $\mu$-convex if it satisfies one of the following equivalent conditions:
+\begin{enumerate}
+  \item $f(x)-\frac{\mu}{2}\|x\|
+  ^2$ is convex.
+  \item (If $f$ is  differentiable) 
+  $$tf(x)+(1-t)f(y) \ge f(tx+(1-t)y)+\frac{\mu}{2}t(1-t)\|y-x\|^2$$ for every $x,y$.
+  \item (If $f$ is differentiable) $$D_f(x,y)\ge \frac{\mu}{2}\|y-x\|^2$$ for every $x,y$.
+  \item (If $f$ is  differentiable)$\nabla f$ is $\mu$-strongly monotone  \gs{\kh{\nabla f(x)-\nabla f(y),x-y}\ge \mu\|x-y\|^2} for every $x,y$.
+  
+  \item (If $f$ is twice differentiable) $\nabla^2 f(x)\succeq \mu I$ for every $x$.
+\end{enumerate}
+}
+\pff{4 $\Rightarrow$ 1: 
+Note $D_f(-,y)$ has same convexity as $f$,\gs{\nabla_x D_f(x,y)=\nabla f(x)-\nabla f(y)} }
+
+\thm{Properties of strong convexity}{For every $x,y$,\gs{D_f(x,y)\le \frac{1}{2\mu}|\nabla f(x)-\nabla f(y)|^2}and 
+\gs{
+\kh{\nabla f(x)-\nabla f(y),x-y}\le \frac{1}{\mu}\|\nabla f(x)-\nabla f(y)\|^2
+}}
+\pff{The twice Bregman divergence is \gs{D_{D_f(-,y)}(y,x)=0-D_f(x,y)-\langle \nabla f(x)-\nabla f(y),y-x\rangle\ge \frac{\mu}{2}|y-x|^2}thus \gs{D_f(x,y)\le-\langle \nabla f(x)-\nabla f(y),y-x\rangle- \frac{\mu}{2}|y-x|^2\le \frac{1}{2\mu}|\nabla f(x)-\nabla f(y)|^2}
+The second inequality is a direct consequence of the first one. It can also be derived by Cauchy-Schwarz inequality and $\nabla f$ is H\"older.
+}
+Similarly we have the following definition for Lipschitz smooth functions:
+
+\defi{Lipschitz smoothness}{$f$ is $L$-smooth if it satisfies one of the following equivalent conditions:
+\begin{enumerate}
+  \item $f(x)-\frac{L}{2}\|x\|^2$ is concave.
+  \item (If $f$ is  differentiable) 
+  $$tf(x)+(1-t)f(y) \le f(tx+(1-t)y)+\frac{L}{2}t(1-t)\|y-x\|^2$$ for every $x,y$.
+  \item (If $f$ is differentiable) $$D_f(x,y)\le \frac{L}{2}\|y-x\|^2$$ for every $x,y$.
+  \item (If $f$ is  differentiable) \gs{\kh{\nabla f(x)-\nabla f(y),x-y}\le L\|x-y\|^2} for every $x,y$.
+  
+  \item (If $f$ is twice differentiable) $\nabla^2 f(x)\preceq L I$ for every $x$.
+\end{enumerate}
+  }
+If $f$ is also convex, we also have the following counterpart of \ref{theo:Properties of strong convexity}:\thm{Bailon-Haddad}{ $f$ is convex and $L$-smooth is equivalent to the following:
+\begin{enumerate}
+\item For every $x,y$,\gs{D_f(x,y)\ge \frac{1}{2L}|\nabla f(x)-\nabla f(y)|^2}
+\item $f$ is \textbf{cocoercive}: for every $x,y$, 
+\gs{  \kh{\nabla f(x)-\nabla f(y),x-y}\ge \frac{1}{L}\|\nabla f(x)-\nabla f(y)\|^2}
+\item $f$ is convex and $\nabla f$ is $L$-Lipschitz.
+\end{enumerate}}
+\pff{ As before $F_f(-,y)$ has same smoothness as $f$, so the twice Bregman divergence is \gs{D_{D_f(-,y)}(z,x)=D_f(z,y)-D_f(x,y)-\kh{\nabla f(x)-\nabla f(y),z-x}\le \frac{L}{2}|z-x|^2} The rest follows from  Cauchy-Schwarz inequality.
+Convexity implies $D_f(z,y)\ge 0$, thus \gs{D_f(x,y)\ge \frac{1}{2L}|\nabla f(x)-\nabla f(y)|^2}
+}
+
+Now we consider strongly convex and Lipschitz smooth functions at the same time. We have the following important inequalities:\thm{Inequality for strong convex and Lipschitz smooth functions}{If $f$ is $\mu$-convex and $L$-smooth, for every $x,y$
+\gs{D_f(x,y)\ge \frac{\mu L}{2(\mu+L)}\|x-y\|^2+\frac{1}{2(\mu+L)}|\nabla f(x)-\nabla f(y)|^2}
+and 
+\gs{\kh{\nabla f(x)-\nabla f(y),x-y}\ge \frac{\mu L}{\mu+L}\|x-y\|^2+\frac{1}{\mu+L}|\nabla f(x)-\nabla f(y)|^2
+}}
+\pff{ $f(x)-\frac{\mu}{2}\|x\|^2$ convex and $(L-\mu)$-smooth. Using cocoercivity in \ref{theo:Bailon-Haddad} we get
+\gs{D_f(x,y)-\frac{\mu}{2}|x-y|^2\ge \frac{1}{2(L-\mu)}|\nabla f(x)-\nabla f(y)-\mu(x-y)|^2}This gives
+\gs{LD_f(x,y)+\mu D_f(y,x)\ge \frac{\mu L}{2}|x-y|^2+ \frac{1}{2}|\nabla f(x)-\nabla f(y)|^2 }
+Since right hand side is symmetric in $x,y$, we can exchange $x,y$ to get \gs{(L+\mu)D_f(y,x)\ge \frac{\mu L}{2}|x-y|^2+ \frac{1}{2}|\nabla f(x)-\nabla f(y)|^2 }
+}
+
+\chapter{Appendix C: Algorithm pseudocode}
+\section{Backtracking line search}
+\begin{verbatim}
+Input: x0, t0 > 0, tau in (0,1), r in (0,1)
+for k = 0, 1, 2, ... do
+  t = t0
+  while f(xk - t * grad f(xk)) > f(xk) - r * t * ||grad f(xk)||^2 do
+    t = tau * t
+  end
+  x_{k+1} = xk - t * grad f(xk)
+end
+\end{verbatim}
+
 \begin{thebibliography}{9}
 
 \bibitem{boumal2023introduction} Nicolas Boumal. An introduction to optimization on smooth manifolds. Cambridge University Press, 2023.
@@ -242,6 +416,8 @@ An alternative way to define $\mu$-strong convexity is that $f(x)-f(y)-\mu\frac{
 \bibitem{boyd} Stephen Boyd and Lieven Vandenberghe. Convex Optimization. Cambridge University Press, 2004.
 
 \bibitem{roc} Rockafellar, R. T. Convex Analysis. Princeton University Press, 1970.
+
+\bibitem{taylor} de Klerk, E., Glineur, F. \& Taylor, A.B. On the worst-case complexity of the gradient method with exact line search for smooth strongly convex functions. Optim Lett 11, 1185-1199 (2017).
 
 \begin{CJK*}{UTF8}{gkai}
 \bibitem{optmodel} 袁亮、黄红选、王晓军. \textit{最优化：建模、算法与理论}. 高教出版社, 2022.
