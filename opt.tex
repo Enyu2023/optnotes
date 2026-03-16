@@ -1,5 +1,6 @@
 \documentclass[a4paper]{mynotes}
 \usepackage{CJKutf8}
+\usepackage{braket}
 \def\redd#1{\textcolor{red}{#1}}
 \def\dom{\text{dom}}
 \def\ri{\mathbf{Relint}}
@@ -129,8 +130,11 @@ $(\lambda,\mu)$ are called the KKT multipliers. The KKT condition is necessary f
 
 If we interpret $f$ as a potential field, the $g,h$ as (one-sided or two-sided) constaints, and the optimal problem as solving the equilibrium of the system, then the KKT condition is just the balance of forces: the potential force $\nabla f$ is balanced by the constraint forces $\lambda\cdot\nabla h+\mu\cdot \nabla g$. Of cource we need $\nabla g$ and $\nabla h$ to be nice enough to be able to stands for the normal forces of the constraints, which is exactly the constraint qualification condition. 
 
-The KKT condition is also natural in terms of the Lagrangian duality: it's the first order condition of the dual problem \gs{\sup_{\lambda,\mu\in K^0}\inf_x L(x,\lambda,\mu)}
-Thus, KKT conditions are necessary if the strong duality holds.
+The KKT condition is also natural in terms of the Lagrangian duality: it's  first order condition of the
+critical point of the Lagrangian function.
+%dual problem \gs{\sup_{\lambda,\mu\in K^0}\inf_x L(x,\lambda,\mu)}
+Thus, KKT conditions are necessary if the strong duality holds. \redd{TBA}
+
 \subsection{
     Second order condition
 }
@@ -173,14 +177,17 @@ Under Slater's condition, the convex KKT condition is also necessary for optimal
 
 \chapter{Algorithms}
 I briefly summarize the algorithms for optimization problems in this chapter. 
-\section{First order algorithms}
+
 
 \section{Gradient descent}
 \subsection{Exact line search}
-We assume throughout the section that $f$ is diffenrentiable and attains a minimum $\inf f=f(x^\star)$. The idea of GD is simple:
-\gs{x_{k+1}=x_k-t_k\nabla f(x_k)} where $t_k$ is the step size.
 
-The real problem is how to choose the step size.  You can use \textbf{exact line search} to find the optimal step size at each step. i.e. \gs{t_k=\arg\min_{t>0} f(x_k-t\nabla f(x_k))} A very important example:
+We assume throughout the section that $f$ is diffenrentiable and attains a minimum $\inf f=f(x^\star)$. The idea of GD is simple:
+\gs{x_{k+1}=x_k+t_kd_k} where $d_k=-\nabla f(x_k)$ is a descent direction $t_k$ is the step size.
+
+The real problem is how to choose the step size.  You can use \textbf{exact line search} to find the optimal step size at each step. i.e. \gs{t_k=\arg\min_{t>0} f(x_k+td_k)} This implies that 
+\gs{\kh{\nabla f(x_{k+1}),d_k}=\kh{\nabla f(x_{k+1}),-t_k\nabla f(x_k)}=0}So the descent direction in GD  is orthogonal to last step and sequence will zigzag along a polygonal curve.
+A very important example:
 \eg{Quadratic form}{ If we have a positive definite quadratic form\gs{f(x)=\frac{1}{2}\kh{x|A|x}=\frac{1}{2}|x|_A^2} then the optimal direction is $$d_k=-Ax_k$$ step size is 
 \gs{t_k=\frac{|{Ax_k}|^2}{|Ax_k|_A^2}\subset\fk{1/\sigma_1,1/\sigma_r}   }
 thus\gs{|x_{k+1}|_A^2=&|x_k-t_kAx_k|_A^2=|x_k|_A^2+t_k^2|Ax_k|_A^2-2t_k\kh{x_k|A|x_k}_A\\=&\yk{1-\frac{|{Ax_k}|^4}{\kh{Ax_k|A|Ax_k}\kh{x_k|A|x_k}} }|x_k|_A^2\\=&\yk{1-\frac{|{d_k}|^4}{\kh{d_k|A|d_k}\kh{d_k|A^{-1}|d_k}} }|x_k|_A^2
@@ -248,19 +255,142 @@ Also using\gs{f(x_{k+1})-f(x^\star)\le \frac{1}{2t_k}\yk{|x_k-x^\star|^2-|x_{k+1
 
 
 But the problem is most of the time we don't know $L$ beforehand.
-To determine $t_k$, we use the\textbf{ back-track line search}. You start with a stepsize then reduce it by a factor $\tau\in(0,1)$ until the \textbf{Armijo condition} is satisfied \gs{f(x_k)-f(x_{k+1})\ge r t_k|\nabla f(x_k)|^2} where $r\in (0,1)$ is understood as the ratio of the real descent and expected descent. 
+To determine $t_k$, we use the\textbf{ back-track line search}. You start with a stepsize then reduce it by a factor $\tau\in(0,1)$ until the \textbf{Armijo condition} is satisfied \gs{f(x_{k+1})-f(x_{k})\le r t_k\kh{\nabla f(x_k),d_k}} where $r\in (0,1)$ is understood as the ratio of the real descent and expected descent. 
 We also assume our function is $L$-smooth:
-\gs{f(x_k)-f(x_{k+1})\ge t_k|\nabla f(x_k)|^2-\frac{L}{2}t_k^2|\nabla f(x_k)|^2} so the output of the backtrack line search is at most \gs{\frac{2(1-r)}{L}}thus the number of evaluations of $f$ and $\nabla f$ we need is $\sim\log_\tau \left(\frac{1-r}{L}\right)$. 
+\gs{f(x_{k+1})-f(x_{k})\le t_k\kh{\nabla f(x_k),d_k}+\frac{L}{2}t_k^2|d_k|^2} In case of $d_k=-\nabla f(x_k)$, we have \gs{ -t_k{|\nabla f(x_k)|^2}+\frac{L}{2}t_k^2|\nabla f(x_k)|^2<-rt_k |\nabla f(x_k)|^2 }once $$t_k< \frac{2(1-r)}{L}$$so the output of the backtrack line search is at most ${\frac{2(1-r)}{L}}\tau$ and the number of iterations we need is $\sim\log_\tau \left(\frac{1-r}{L}\right)$. 
 
 \subsection{Barzilai-Borwein}
+We have seen in the last section that the convergence of gradient descent is very slow when the condition number $\kappa$ is large. The Barzilai-Borwein method is a simple modification of gradient descent to improve the convergence in this case. Let $\Delta x_k=x_k-x_{k-1},\Delta g_k=\nabla f(x_k)-\nabla f(x_{k-1})$. The \textbf{long BB step}:\gs{\aa^L_k=\frac{|\Delta x_k|^2}{\kh{\Delta x_k,\Delta g_k}}}and the \textbf{short BB step}:
+\gs{\aa^S_k=\frac{\kh{\Delta x_k,\Delta g_k}}{|\Delta g_k|^2}}Note that if $f$ is $\mu$-convex and $L$-smooth, \gs{
+  \frac{1}{L}\le\aa_k^S\le \aa_k^L\le \frac{1}{\mu}
+}
+The stepsize can also be viewed as the best approximation of inverse of Hessian which satisfies the following intermediate value equality(or secant equation): $$\Delta x_k-\yk{\nabla^2 f(\xi)}^{-1}\Delta g_k=0 ,\xi\in[x_{k-1},x_k]$$
+$\aa$ are chosen to minimize\gs{|\Delta x_k/\aa- \Delta g_k|}or \gs{|\Delta x_k-\aa\Delta g_k|^2}
+In orther words, BB method is actually a simplified quasi-Newton method: it's just the secant methodalong the search direciton.
 
-In our model example \ref{exam:Quadratic form}, the step size is \gs{t_k=\frac{|{Ax_k}|^2}{|Ax_k|_A^2}} which is the inverse of the Rayleigh quotient of $A$ at $d_k$. The Barzilai-Borwein method is to use the same step size for general functions, i.e. 
+Also this method is non-monotone. Thus we need to shrink $\aa$ until the following Grippo's condition is satisfied\gs{
+  f(x_k+\aa d_k )\le \max_{j\in [\min \hk{k,M}]} f(x_{k-j})+r\aa\kh{\nabla f(x_k),d_k}
+}so that $f$ doesn't increase too much compared to the preceding $M$ steps.
+
+\section{Newton's method}
+\subsection{Damped Newton's method}
+We have seen in the last section that the convergence of gradient descent is very slow when the condition number $\kappa$ is large, so it performs poorly if you choose bad coordinates. We can either modified the stepsize as the BB method, or change the search directions. 
+
+Recall in the example \ref{exam:Quadratic form}, the gradient descent use the search direction $d_k=-\nabla f(x_k)=-Ax$, but if we are in god mode and know the Hessian $A$, we should have used the optimal direction $x^*-x=-x$ with stepsize 1 which is $-A^{-1}\nabla f$. Thus the \textbf{classical or pure Newton's method} is defined as the iteration of the following update rule: \gs{x_{k+1}=x_k+d_k \st  \nabla^2 f(x_k)d_k=\nabla f(x_k)}which minimize the second order approximation of $f$ at each step. The Newton step (if Hessian is non-singular)\gs{-(\nabla^2 f(x_k))^{-1}\nabla f(x_k)} is invariant under the affine transformation of coordinates, so it is not heavily influenced by the condition number as in GD.
+
+The \textbf{Newton decrement} is \gs{\lambda^2_k=-\frac d{dt}f(x+td_k)=\kh{-\nabla f(x_k),d_k}=\kh{\nabla f(x_k)|\nabla^2 f(x_k)^{-1}|\nabla f(x_k)}}can be thought as an estimate of $f-\inf f$. When $\lambda_k$ is small, we need to shrink stepsize using backtrack line search. \redd{TBA}
 
 
 
-\section{Second order algorithms}
-\subsection{Newtonian}
-\subsection{Trust-region method}
+\subsection{Quasi-Newton method}
+Sometimes computing Hessian is costly, we use the information of succesive gradients to approximate the Hessian
+which satisfies the following secant equation\gs{\nabla^2 f(\xi)\Delta x_k-\Delta g_k=0, \xi\in[x_{k-1},x_k]}
+ Let $\Delta x_k=x_k-x_{k-1},\Delta g_k=\nabla f(x_{k})-\nabla f(x_{k-1})$. We choose $B_k$ or its inverse $H_k$ that satisfying following \textbf{secant equation}
+\gs{
+ \Delta g_k=B_{k} \Delta x_{k}
+}or inversely \gs{
+  H_{k}{\Delta g_k}= \Delta x_{k}
+}
+The iteration rule is then\gs{
+  x_{k+1}=x_k-\aa_kB_k^{-1}\nabla f(x_k)=x_k-\aa_kH_k\nabla f(x_k)
+}
+You absolutely want $B_k\succeq 0$ so at least \gs{\kh{\Delta g_k,\Delta x_{k}}> 0
+}This is called the \textbf{curvature condition}.
+It is guarenteed by backtrack line search using Wolfe condition
+\gs{\kh{\nabla f(x_{k}+\aa d_k),d_k}\ge (1-c)\kh{\nabla f(x_k),d_k}}
+
+The simpliest update formular of $B$ is the following \textbf{symmetric rank-one (SR1) method}:\gs{
+  B_{k}=B_{k-1}\pm u u^*
+}
+so \gs{\pm
+   u\braket{ u,\Delta x_k}=\Delta g_k-B_{k-1}\Delta x_k
+}thus \gs{ u=\frac{\Delta g_k-B_{k-1}\Delta x_k}{\sqrt{\pm\kh{\Delta x_k,\Delta g_k-B_{k-1}\Delta x_k}}}}
+and 
+\gs{
+  B_k=B_{k-1}+\frac{\yk{\Delta g_k-B_{k-1}\Delta x_k}\yk{\Delta g_k-B_{k-1}\Delta x_k}^*}{\kh{\Delta x_k,\Delta g_k-B_{k-1}\Delta x_k}}
+}
+And we can invert $B_{k}$ via the Sherman-Morrisan formula\ref{theo:Sherman-Morrisan formula}
+\gs{
+  H_k=H_{k-1}+\frac{\yk{\Delta x_k-H_{k-1}\Delta g_k}\yk{\Delta x_k-H_{k-1}\Delta g_k}^*}{\kh{\Delta x_k,\Delta x_k-H_{k-1}\Delta g_k}}
+}
+Note the formula requires the denominator \gs{
+\kh{\Delta g_k-B_{k-1} \Delta x_k,\Delta x_k}\neq 0
+}
+Also note that we positive-definiteness is not preserved if the denominator is negative. 
+
+There is also rank two updates:  the \textbf{Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm}
+is formula of the form: \gs{
+  B_k=B_{k-1}+au u^*+b v v^*
+}
+which implies
+\gs{
+  a\kh{u,\Delta x_k}u+b\kh{v,\Delta x_k}v=\Delta g_k-B_{k-1}\Delta x_k
+}
+An obvious solution is \gs{
+  u=\frac{\Delta g_k}{|\kh{\Delta g_k,\Delta x_k}|^{1/2}},v=\frac{B_{k-1}\Delta x_k}{\kh{\Delta x_k,B_{k-1},\Delta x_k
+  }^{1/2}
+  }
+  }
+  Thus the updating rule is \gs{
+    B_k=B_{k-1}+\frac{(\Delta g_k )(\Delta g_k)^*}{\kh{\Delta g_k,\Delta x_k}}-\frac{(B_{k-1}\Delta x_k)(B_{k-1}\Delta x_k)^*}{\kh{\Delta x_k|B_{k-1}|\Delta x_k}}
+  }
+  Again using the SM formula to invert $B_k$ we have
+\gs{
+  H_k=\yk{1-\frac{{(\Delta x_k)(\Delta g_k )^*}}{\braket{\Delta g_k|\Delta x_k}}}H_{k-1}\yk{1-\frac{\yk{\Delta g_k }\yk{\Delta x_k}^*}{\braket{\Delta g_k|\Delta x_k}} }+\frac{|\Delta x_k|^2}{\braket{\Delta g_k|\Delta x_k}}
+}
+Note that if the curvature condition is satisfied, then the formula preserves the positive-definiteness of $H_{k-1}$.
+
+We can also use rank two updates on $H_k$, this yields the following \textbf{Davidon-Fletcher-Powell (DFP) formula}:
+
+
+L-BFGS
+
+\section{Trust-region method}
+The idea is we choose step size first, then we determine the search direction (in contrast with the line search method). At each iteration we minimize a quadratic approxiamation
+\gs{m_k(d)=f(x_k)+\braket{\nabla f(x_k),d}+\frac12\braket{d|B_k|d}}
+of the objective function at $x_k$ in a ball (the \textbf{trust-region}) with radius $\Delta_k$  \gs{
+ \min m_k(d),|d|\le \Delta_k
+} 
+The radius is updated according to the , ratio of actual reduction and expected reduction:\gs{
+  \rho_k=\frac{f(x_k)-f(x_k+d_k)}{m_k(0)-m_k(d_k)}
+}
+
+
+\subsection{Trust-region subproblem}
+The TRS is of the form:\gs{
+  \min m(d)=f+\braket{g,d}+\frac{1}{2}\braket{d|B|d}, |d|\le \Delta
+}
+it is a non-convex example with strong duality. The Lagrangian\gs{
+  L(d,\lambda)=f+\braket{g,d}+\frac{1}{2}\braket{d|B+\lambda |d}-\frac{\lambda}{2}\Delta ^2
+}the dual function is\gs{
+  \inf_d L(d,\lambda)=\begin{cases}
+    f-\braket{g|(B+\lambda)^{-1}|g}-\frac{\lambda}{2}\Delta^2&B+\lambda\succeq 0\\-\infty&\text{else}
+  \end{cases}
+}
+so the optimal value of the dual program is attained at a KKT point that satisfies\gs{|d^*|\le \Delta^2,\lambda^*\ge 0\\
+  g+(B+\lambda^*)d^*=0\\\lambda^*(|d^*|^2-\Delta^2)=0\\B+\lambda^*\succeq 0
+} such a point is a saddle point:
+\gs{
+  L(d^*+p,\lambda^*)=L(d^*,\lambda^*)+\frac{1}{2}\braket{p|B+\lambda^*|p}\ge L(d^*,\lambda^*)
+}and \gs{
+L(d^*,\lambda^*+s)=L(d^*,\lambda^*)+\frac{s}{2}(|d^*|^2-\Delta^2)\le L(d^*,\lambda^*)
+}so the strong duality holds exactly at this KKT point.
+
+So there are two cases, one is $\lambda^*=0$ and $d^*$ is just the Newton step. The other case is $|d^*|=\Delta$, and \gs{
+  d^*=-(B+\lambda^*)^{-1}g
+}
+If $B$ has  eigenvalues $\sigma_i$ with increasing order, and $g=(g_i)$ under the canonical coordinates, we need to solve $\lambda+\sigma_1\ge 0$ s.t. \gs{
+  \sum_i \frac{g_i^2}{(\sigma_i+\lambda)^2}=\Delta^2
+}
+if $\Delta$ is small we can get our $\lambda^*$.
+
+In fact, 
+ strong duality holds for any programs with  quadratic objective funcitons and exactly one quadratic constraints if Slater's condition holds (The proof of this is much more involved, see\ref{theo:Strong duality for quadratic programs}). 
+
+One can also use \textbf{conjugate gradient method} to solve the TRS.
+
+\subsection{Convergence analysis}
+
 \section{Stochastic gradient descent}
 
 \chapter{First order optimization on manifolds}
@@ -328,6 +458,77 @@ There is also a variational interpretation of singular values. Consider $$(u,v)\
 which implies $\sigma=2\lambda_1=2\lambda$ and $u,v$ are left and right singular vectors. Now we use induction by consider the unitary complement of $u$ and $v$ to find the rest of the singular values.
 
 The \textbf{condition number} of $A$ is the ratio of the largest and smallest singular value\gs{\kappa =\frac{\sigma_1}{\sigma_r}} which can be viewed as a generalized eccentricity of the ellipsoid.
+
+\section{
+Sherman-Morrisan formula }
+\thm{Sherman-Morrisan formula }{$A$ is invertible, then
+$A+{u}{v}^*$ is invertible iff 
+\gs{1+\kh{v|A^{-1}|u}\neq 0}in which case
+\gs{
+  (A+u v^*)^{-1}=A^{-1}-\frac{A^{-1} u  v^* A^{-1}}{1+\kh{v|A^{-1}|u}}
+}}
+\pff{It suffices to prove the special case of $1+ u v^*$. Note $( u v^*)^k=\kh{u,v}^{k-1} u v^*$
+  \gs{(1+ u v^*)^{-1}=\sum_{k\ge 0} (- u v^*)^{k}=1-\frac{ u v^*}{1+\kh{u,v}}}
+This is just a formal computation, but the result indeed invert our $1+ u v^*$. Necessarity is trivial.
+  }
+
+\section{Gneralised inverse and Schur complement}
+
+
+\thm{Rank-1 exactness}{
+If $A,B\in S$ are symmetric, then for every positive definite matrice $X\in S_+$, there is a vector $x$ s.t. \gs{
+  \braket{x|A|x}=\tr\yk{AX},\braket{x|B|x}=\tr\yk{BX}
+}
+As a consequence, the field of values of homogeneous quadratic forms \gs{
+W(A,B)=\hk{(\braket{x|A|x},\braket{x|B|x})}
+}is a convex cone.
+}
+
+\redd{TBA}
+\section{S-procedure}
+
+
+\thm{Strong duality for quadratic programs}{
+  Strong duality holds for any programs with a  quadratic objective funcitons and one quadratic constraints if Slater's condition holds. 
+ } 
+ The proof relies on the following lemma:
+\lem{S-procedure}{
+  Supppose we have two quadratic forms\gs{
+   q_i(x)= \braket{x|A_i|x}+2\braket{b_i,x}+c_i, i=1,2
+  }
+  If there exists $q_2(x_0)<0$, then $q_2(x)\le 0\TO q_1(x)\ge 0$ iff there is $\lambda\ge 0$ s.t. \gs{
+    q_1+\lambda q_2\succeq 0
+  }
+}
+\pff{If part is trivial. To see the only if part,  consider the closed cone generated by 
+$$\hk{(q_1(x),q_2(x))}$$
+The quadratic form have matrice\gs{
+   Q_i= \jz{A_i &b_i\\b_i^*&c_i}
+}with $$q_i(x)=\braket{[x,1]|Q_j|[x,1]}$$
+According to \ref{theo:Rank-1 exactness}\gs{
+  q_i(x)+q_i(y)= \braket{[z,t]|Q_i|[z,t]}
+}if $t=0$, \gs{ q_i(x+s z)=s^2 \braket{z|A_i|z}+2s\braket{A_ix+b_i|z}+ q_i(x)
+}
+which implies that $q_i(x)+q_i(y)=\braket{z|A_i|z}$ is in the closure of the cone, so the closed cone is convex.
+If there is a Slater point $(q_2(x_0))<0$, there must be a line\gs{
+  q_1+\lambda q_2, \lambda \ge 0
+}that separates the closed cone and the third quadrant.
+}\redd{TBA}
+\pff{
+  Consider the problem\gs{
+    \min q_1\st q_2\le 0
+  }
+  The Lagrangian is \gs{
+    L(x,\lambda)=q_1(x)+\lambda q_2(x), \lambda \ge 0
+  }
+  the dual function is \gs{-p^*(\lambda )=&
+    \inf_x L(x,\lambda )\\=&\begin{cases}c_1+\lambda c_2-
+    \braket{b_1+\lambda b_2|(q_1+\lambda A_2)^+|b_1+\lambda b_2}&q_1+\lambda q_2\succeq 0\ \text{and} \exists\ x\\&\st (A_1+\lambda A_2)x=b_1+\lambda b_2\\-\infty&\text{else}
+    \end{cases}
+  }
+  
+}
+
 
 \chapter{Appendix B: Convex analysis}
 \section{Strong convexity and Lipschitz smoothness}
@@ -418,7 +619,7 @@ end
 \bibitem{roc} Rockafellar, R. T. Convex Analysis. Princeton University Press, 1970.
 
 \bibitem{taylor} de Klerk, E., Glineur, F. \& Taylor, A.B. On the worst-case complexity of the gradient method with exact line search for smooth strongly convex functions. Optim Lett 11, 1185-1199 (2017).
-
+\bibitem{abt} Taylor, A. B., Hendrickx, J. M., \& Glineur, F. (2017). Smooth strongly convex interpolation and exact worst-case performance of first-order methods. Mathematical Programming, 161(1-2), 307-345.
 \begin{CJK*}{UTF8}{gkai}
 \bibitem{optmodel} 袁亮、黄红选、王晓军. \textit{最优化：建模、算法与理论}. 高教出版社, 2022.
 \end{CJK*}
