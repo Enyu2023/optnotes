@@ -593,19 +593,8 @@ and
 Since right hand side is symmetric in $x,y$, we can exchange $x,y$ to get \gs{(L+\mu)D_f(y,x)\ge \frac{\mu L}{2}|x-y|^2+ \frac{1}{2}|\nabla f(x)-\nabla f(y)|^2 }
 }
 
-\chapter{Appendix C: Algorithm pseudocode}
-\section{Backtracking line search}
-\begin{verbatim}
-Input: x0, t0 > 0, tau in (0,1), r in (0,1)
-for k = 0, 1, 2, ... do
-  t = t0
-  while f(xk - t * grad f(xk)) > f(xk) - r * t * ||grad f(xk)||^2 do
-    t = tau * t
-  end
-  x_{k+1} = xk - t * grad f(xk)
-end
-\end{verbatim}
-
+\section{Subgradient and directional derivative}
+\textbf{cyclic monotonicity}
 \begin{thebibliography}{9}
 
 \bibitem{boumal2023introduction} Nicolas Boumal. An introduction to optimization on smooth manifolds. Cambridge University Press, 2023.
