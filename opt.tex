@@ -1,6 +1,8 @@
 \documentclass[a4paper]{mynotes}
 \usepackage{CJKutf8}
+\usepackage{amsmath}
 \usepackage{braket}
+\usepackage[ruled,vlined]{algorithm2e}
 \def\redd#1{\textcolor{red}{#1}}
 \def\dom{\text{dom}}
 \def\ri{\mathbf{Relint}}
@@ -133,7 +135,9 @@ If we interpret $f$ as a potential field, the $g,h$ as (one-sided or two-sided) 
 The KKT condition is also natural in terms of the Lagrangian duality: it's  first order condition of the
 critical point of the Lagrangian function.
 %dual problem \gs{\sup_{\lambda,\mu\in K^0}\inf_x L(x,\lambda,\mu)}
-Thus, KKT conditions are necessary if the strong duality holds. \redd{TBA}
+If the strong duality holds and dual optimal point is feasible:\gs{
+  f(x^\star)=\inf_x L(x,\lambda^\star,\mu^\star)\le L(x^\star,\lambda^\star,\mu^\star)\le f(x^\star)
+}this implies KKT condition is necessary. \redd{TBA}
 
 \subsection{
     Second order condition
@@ -175,8 +179,8 @@ Under Slater's condition, the convex KKT condition is also necessary for optimal
 
 
 
-\chapter{Algorithms}
-I briefly summarize the algorithms for optimization problems in this chapter. 
+\chapter{Algorithms for unconstrained optimization}
+
 
 
 \section{Gradient descent}
@@ -222,10 +226,17 @@ then\gs{ \kappa\yk{f(x_{k})-f(x_{k+1})}\ge  {f(x_k)-\inf f} }where $\kappa=\frac
   \gs{f(x_{k+1})-\inf f\le \frac{\kappa-1}{\kappa}\yk{f(x_k)-\inf f}} which means
   the convergence is linear with factor $$1-\frac{\mu}{L}=\frac{\kappa-1}{\kappa}$$ which is close to $1$ for large $\kappa$.
 
-The bound rate of convergence we derived here is bigger than the quadratic case, but in fact it was proved in 2016 by Klerk et-al \cite{taylor} that the bound of the rate of convergence of exact line search is actually \gs{\yk{\frac{L-\mu}{L+\mu}}^2=\yk{\frac{\kappa-1}{\kappa+1}}^2
+The bound rate of convergence we derived here is bigger than the quadratic case, but in fact it was proved in 2016 by Klerk et-al \cite{taylor} that the bound of the rate of convergence of exact line search of a $\mu$-smooth and $L$-smooth function is actually \gs{\yk{\frac{L-\mu}{L+\mu}}^2=\yk{\frac{\kappa-1}{\kappa+1}}^2
 } for the worst case.(\redd{TBA})
-\subsection{Back-track line search}
-In general, we use inexact line search methods. But first lets look at the case when we have a good guess of the Lipschitz constant $L$ of $\nabla f$.
+
+\subsection{Convergence of bounded stepsize} First lets look at the case when we have a good guess of the Lipschitz constant $L$ of $\nabla f$. For $L$-smooth $f$ we have
+\gs{f(x_{k})-f(x_{k+1})\ge \yk{t_k-\frac{L}{2}t_k^2}|\nabla f(x_k)|^2 }thus \gs{
+  f(x_0)-\inf f\ge \sum_k\yk{t_k-\frac{L}{2}t_k^2}|\nabla f(x_k)|^2
+}
+If $t_k\in [t_-,t_+]\subset (0,2/L)$ so that $$t_k(1-Lt_k/2)\ge c=\min_{\pm}  t_{\pm}(1-Lt_{\pm}/2)$$ then
+$$\inf_{k<K} |\nabla f(x_k)|\le \frac{f(x_0)-\inf f}{cK}$$ 
+and $\nabla f(x_k)\to 0$.
+
 \lem{Descent lemma of objective values}{
 If $f$ is convex and $L$-smooth, $t_k\in[t_-,t_+]\subset (0,1/L]$:\gs{f(x_{{k
 +1}})\le f(x^\star)+\frac{1}{2t_k}\|x_k-x^\star\|^2-\frac{1}{2t_k}\|x_{k+1}-x^\star\|^2
@@ -235,29 +246,99 @@ If $f$ is convex and $L$-smooth, $t_k\in[t_-,t_+]\subset (0,1/L]$:\gs{f(x_{{k
 +1}})\le &f(x_k)- t_k\|\nabla f(x_k)\|^2+\frac{L}{2}t_k^2\|\nabla f(x_k)\|^2\\\le& f(x^\star)+\kh{\nabla f(x_k),x_k-x^\star}-\frac{1}{2}t_k\|\nabla f(x_k)\|^2\\=&f(x^\star)+\kh{\nabla f(x_k),x-x^{\star}-\frac{1}{2}t_k \nabla f(x_k)  }\\=&f(x^\star)+\frac{1}{2t_k}\|x_k-x^\star\|^2-\frac{1}{2t_k}\|x_{k+1}-x^\star\|^2
 } 
 }
-As a consequence\gs{(k+1)t_-(f(x_k)-f(x^\star))\le \sum_k t_k(f(x_{k+1})- f(x^\star))\le \frac{1}{2}\|x_0-x^\star\|^2}and \gs{f(x_k)-f^\star\le \frac{|x_0-x^\star|^2}{2kt_-}} which implies the convergence rate is $O(1/k)$.  
+As a consequence\gs{(k+1)t_-(f(x_k)-f(x^\star))\le \sum_k t_k(f(x_{k+1})- f(x^\star))\le \frac{1}{2}\|x_0-x^\star\|^2}and \gs{f(x_k)-f^\star\le \frac{|x_0-x^\star|^2}{2kt_-}} which implies the convergence rate is $O(1/k)$. 
+\thm{}{ If $f$ is convex and $L$-smooth and the stepsize are chosen so that $$t_k\in [t_-,t_+]\subset (0,1/L]$$ then $$f(x_k)-f(x_*)\sim O(1/k)$$} 
 
 %From here we already know $$\sum_k t_k|\nabla f(x_k)|^2\le \frac{f(x_0)-\inf f}{r}$$ Once $\liminf_{k\to\infty} t_k>0$, we have $$\lim_{k\to\infty} |\nabla f(x_k)|^2=0$$and\gs{\min _{0\le k\le N}|\nabla f(x_k)|^2\le \frac{f(x_0)-\inf f}{r(N+1)\min_{0\le k\le N} t_k}} 
 
-As in the exact line search case, we have \thm{}{ If $f$ is $\mu$-convex and $L$-smooth, the stepsize are chosen so that $$t_k\in [t_-,t_+]\subset (0,2/\mu+L]$$ we have linear convergence rate:$$ {1-t_-\frac{2\mu L}{\mu+L}}\ge \yk{\frac{L-\mu}{L+\mu}}^2.$$  }
+As in the exact line search case, for strong convex functions we have linear convergence rate:\thm{}{ If $f$ is $\mu$-convex and $L$-smooth, the stepsize are chosen so that $$t_k\in [t_-,t_+]\subset (0,2/\mu+L]$$ we have linear convergence rate:$$ {1-t_-\frac{2\mu L}{\mu+L}}\ge \yk{\frac{L-\mu}{L+\mu}}^2.$$  }
 Again note that the convergence rate has the same bound as exact line search. 
 \pff {We use the inequality in \ref{theo:Inequality for strong convex and Lipschitz smooth functions}:
 \gs{\kh{\nabla f(x)-\nabla f(y),x-y}\ge \frac{\mu L}{\mu+L}\|x-y\|^2+\frac{1}{\mu+L}|\nabla f(x)-\nabla f(y)|^2
 }to get
 \gs{|x_{k+1}-x^\star|^2=&|x_k-x^\star|^2-2t_k\kh{\nabla f(x_k),x_k-x^\star}+t_k^2|\nabla f(x_k)|^2\\\le& \yk{1-2t_k\frac{\mu L}{\mu+L}}|x_k-x^\star|^2
 }
-Also using\gs{f(x_{k+1})-f(x^\star)\le \frac{1}{2t_k}\yk{|x_k-x^\star|^2-|x_{k+1}-x^\star|^2}\le \frac{1}{2t_k}\yk{1-t_k\frac{2\mu L}{\mu+L}}^k|x_0-x^\star|^2
+% Also using\gs{f(x_{k+1})-f(x^\star)\le \frac{1}{2t_k}\yk{|x_k-x^\star|^2-|x_{k+1}-x^\star|^2}\le \frac{1}{2t_k}\yk{1-t_k\frac{2\mu L}{\mu+L}}^k|x_0-x^\star|^2
+% }
+The best stepsize is $2/(\mu+L)$ with best convergence rate bound\gs{
+  \yk{\frac{L-\mu}{L+\mu}}^2
 }
+Also, note that \gs{
+  f(x_{k+1})-f(x_{k})\le \yk{-t_k+\frac{L}{2}t_k^2}|\nabla f(x_k)|^2\le 2\mu\yk{-t_k+\frac{L}{2}t_k^2}(f(x_k)-f(x^\star))
+}
+so the value of function has convergence rate\gs{
+  1-2\mu\yk{1-\frac{L}{2}t_k}t_k
+}If use constant step $1/L$, the rate is $1-\mu/L$
 }
 \redd{TBA}
 
 
 
+\subsection{Back-track line search}
 
 But the problem is most of the time we don't know $L$ beforehand.
-To determine $t_k$, we use the\textbf{ back-track line search}. You start with a stepsize then reduce it by a factor $\tau\in(0,1)$ until the \textbf{Armijo condition} is satisfied \gs{f(x_{k+1})-f(x_{k})\le r t_k\kh{\nabla f(x_k),d_k}} where $r\in (0,1)$ is understood as the ratio of the real descent and expected descent. 
+To determine $t_k$, we use the\textbf{ back-track line search}. You start with a stepsize then reduce it by a factor $\tau\in(0,1)$ until the \textbf{Armijo condition} is satisfied \gs{f(x_{k+1})-f(x_{k})\le r t_k\kh{\nabla f(x_k),d_k}} where $r\in (0,1)$ is understood as the ratio of the real descent and expected descent.
 We also assume our function is $L$-smooth:
-\gs{f(x_{k+1})-f(x_{k})\le t_k\kh{\nabla f(x_k),d_k}+\frac{L}{2}t_k^2|d_k|^2} In case of $d_k=-\nabla f(x_k)$, we have \gs{ -t_k{|\nabla f(x_k)|^2}+\frac{L}{2}t_k^2|\nabla f(x_k)|^2<-rt_k |\nabla f(x_k)|^2 }once $$t_k< \frac{2(1-r)}{L}$$so the output of the backtrack line search is at most ${\frac{2(1-r)}{L}}\tau$ and the number of iterations we need is $\sim\log_\tau \left(\frac{1-r}{L}\right)$. 
+\gs{f(x_{k+1})-f(x_{k})\le t_k\kh{\nabla f(x_k),d_k}+\frac{L}{2}t_k^2|d_k|^2}
+we have\gs{
+  t_k\braket{\nabla f(x_k),d_k}+\frac{L}{2}t_k^2|d_k^2|\le rt_k\braket{ \nabla f(x_k),d_k}}
+whenever 
+ $$t_k< \frac{2(1-r)}{L}\frac{\braket{-\nabla f(x_k),d_k}}{|d_k|^2}=\frac{2(1-r)}{L}\frac{|\nabla f(x_k)|}{|d_k|}\cos \theta_k $$
+ Using backtrack line search we have a lower bound of stepsize:\gs{
+  t_k\ge \frac{2(1-r)\tau}{L}\frac{|\nabla f(x_k)|}{|d_k|}\cos \theta_k
+ }
+ This gives the following \textbf{Zoutendijk condition}:\gs{
+  \sum_k |\nabla f(x_k)|^2\cos^2 \theta_k\le L\frac{f(x_0)-\inf f}{2(1-r)r\tau}
+ }so $\nabla f(x_k)\to 0$ whenever $\theta_k$ is strictly uniformly bounded by $\pi/2$.
+
+
+ In our case $d_k=-\nabla f(x_k)$, the output of the backtrack line search is at most ${\frac{2(1-r)}{L}}\tau$ and the number of iterations we need is $\sim\log_\tau \left(\frac{1-r}{L}\right)$. If you set a sequence $\tau_k$ as input stepsize, the output stepsize is \gs{
+  t_k\ge \inf_k t_k=\min\hk{\tau_k,\frac{2(1-r)\tau }{L}}
+}
+
+If $f$ is convex, \gs{
+  f(x_{k+1})\le& f(x_k)+ rt_k\kh{\nabla f(x_k),d_k}\\\le& f(x^\star)+\kh{\nabla f(x_k),x_k-x^\star-rt_k\nabla f(x_k)}\\=&f(x^\star)+\frac{1}{2t_k}\yk{|x_k-x^\star|^2-|x_{k+1}-x^\star|^2}+\yk{\frac{
+    1
+  }{2}-r} |\nabla f(x_k)|^2t_k
+}so the convergence is $O(1/k)$. \redd{TBAabtarmijo}
+
+ If $f$ is also $\mu$-convex, then
+ \gs{
+  f(x_{k+1})- f(x_k)\le  -r|{\nabla f(x_k)}|^2t_k\le 2\mu r t_k(f(x^\star)-f(x_k))
+ }
+ thus the convergence rate is \gs{1-2\mu r\inf {t_k}
+ }
+
+% This implies the convergence rate of function is at least\gs{
+%   1-{2\mu}r\min\hk{\tau_k,{2(1-r)\tau/L }}
+% }\redd{tba}
+
+\subsection{Line search methods in general}
+In many cases, we use the following \textbf{Wolfe conditions}:
+\begin{enumerate}
+ \item Armijo condition: \gs{
+  f(x_{k})-f(x_{k+1})\ge rt_k\kh{-\nabla f(x_k),d_k}
+ }
+  \item Curvature condition:\gs{
+  \braket{-\nabla f(x_{k+1}),d_k}\le c \kh{-\nabla f(x_k),d_k}
+}
+\end{enumerate}
+If $r<c$ such stepsize exists. 
+
+The curvature condition gives a lower bound of stepsize(If you use backtrack line search then this can be dispensed): 
+If the function has $L$-Lipschitz gradient, then\gs{
+  \braket{ \nabla f(x_{k+1})-\nabla f(x_k),d_k}\ge (1-c) \kh{-\nabla f(x_k),d_k}
+}thus\gs{
+  t_k\ge \frac{1-c}{L}\frac{\braket{-\nabla f(x_k),d_k}}{|d_k|^2}
+}
+this together with
+\gs{
+  f(x_k)-f(x_{k+1})\ge rt_k\braket{-\nabla f(x_k),d_k}
+}implies \gs{
+  \sum_k |\nabla f(x_k)|^2\cos^2 \theta_k\le L\frac{f(x_0)-\inf f}{(1-c)r} <\infty
+}
+so $\nabla f(x_k)\to 0$ once $\theta_k$ is strictly uniformly bounded by $\pi/2$.
+
 
 \subsection{Barzilai-Borwein}
 We have seen in the last section that the convergence of gradient descent is very slow when the condition number $\kappa$ is large. The Barzilai-Borwein method is a simple modification of gradient descent to improve the convergence in this case. Let $\Delta x_k=x_k-x_{k-1},\Delta g_k=\nabla f(x_k)-\nabla f(x_{k-1})$. The \textbf{long BB step}:\gs{\aa^L_k=\frac{|\Delta x_k|^2}{\kh{\Delta x_k,\Delta g_k}}}and the \textbf{short BB step}:
@@ -271,6 +352,16 @@ In orther words, BB method is actually a simplified quasi-Newton method: it's ju
 Also this method is non-monotone. Thus we need to shrink $\aa$ until the following Grippo's condition is satisfied\gs{
   f(x_k+\aa d_k )\le \max_{j\in [\min \hk{k,M}]} f(x_{k-j})+r\aa\kh{\nabla f(x_k),d_k}
 }so that $f$ doesn't increase too much compared to the preceding $M$ steps.
+
+
+
+
+
+
+
+
+
+
 
 \section{Newton's method}
 \subsection{Damped Newton's method}
@@ -333,17 +424,24 @@ An obvious solution is \gs{
   }
   Thus the updating rule is \gs{
     B_k=B_{k-1}+\frac{(\Delta g_k )(\Delta g_k)^*}{\kh{\Delta g_k,\Delta x_k}}-\frac{(B_{k-1}\Delta x_k)(B_{k-1}\Delta x_k)^*}{\kh{\Delta x_k|B_{k-1}|\Delta x_k}}
-  }
+ }
   Again using the SM formula to invert $B_k$ we have
 \gs{
   H_k=\yk{1-\frac{{(\Delta x_k)(\Delta g_k )^*}}{\braket{\Delta g_k|\Delta x_k}}}H_{k-1}\yk{1-\frac{\yk{\Delta g_k }\yk{\Delta x_k}^*}{\braket{\Delta g_k|\Delta x_k}} }+\frac{|\Delta x_k|^2}{\braket{\Delta g_k|\Delta x_k}}
 }
+
 Note that if the curvature condition is satisfied, then the formula preserves the positive-definiteness of $H_{k-1}$.
 
-We can also use rank two updates on $H_k$, this yields the following \textbf{Davidon-Fletcher-Powell (DFP) formula}:
+We can also use rank two updates on $H_k$, this yields the following(which swithces the position of $H$ and $B$ in BFGS) \textbf{Davidon-Fletcher-Powell (DFP) formula}:
+\gs{
+H_k = H_{k-1} + \frac{(\Delta x_k)(\Delta x_k)^*}{\kh{\Delta x_k, \Delta g_k}} - \frac{(H_{k-1}\Delta g_k)(H_{k-1}\Delta g_k)^*}{\kh{\Delta g_k|H_{k-1}|\Delta g_k}}
+}
+and 
+\gs{
+  B_k=H_k^{-1}= \yk{1-\frac{{(\Delta g_k)(\Delta x_k)^*}}{\kh{\Delta g_k,\Delta x_k}}}B_{k-1}\yk{1-\frac{\yk{\Delta x_k}\yk{\Delta g_k}^*}{\kh{\Delta g_k,\Delta x_k}} }+\frac{|\Delta g_k|^2}{\kh{\Delta g_k,\Delta x_k}}
+}
 
-
-L-BFGS
+There are also \textbf{ Limited-memory BFGS method (L-BFGS)}:
 
 \section{Trust-region method}
 The idea is we choose step size first, then we determine the search direction (in contrast with the line search method). At each iteration we minimize a quadratic approxiamation
@@ -351,10 +449,58 @@ The idea is we choose step size first, then we determine the search direction (i
 of the objective function at $x_k$ in a ball (the \textbf{trust-region}) with radius $\Delta_k$  \gs{
  \min m_k(d),|d|\le \Delta_k
 } 
-The radius is updated according to the , ratio of actual reduction and expected reduction:\gs{
+The radius is updated according to the ratio of actual reduction and expected reduction:\gs{
   \rho_k=\frac{f(x_k)-f(x_k+d_k)}{m_k(0)-m_k(d_k)}
 }
 
+The algorithm is then
+
+\begin{algorithm}[H]
+
+\caption{Trust-Region Method}
+\label{alg:trust_region}
+
+\KwIn{initial point $x_0$, initial radius $\Delta_0$, maximal radius $\Delta_{\max}$, parameters $0\le \eta<\eta_1<\eta_2<1, 0<\gamma_1<1<\gamma_2$}
+
+\KwOut{The final point $x_k$}
+
+$k \leftarrow 0$\;
+
+\While{stopping criteria not met}{
+
+  solve the trust-region subproblem to get step $d_k$\;
+
+  compute actual vs. predicted reduction ratio $\rho_k$\;
+
+  \uIf{$\rho_k < \eta_1$}{
+
+    $\Delta_{k+1} = \gamma_1\Delta_k$ \tcp*[r]{bad model, shrink region}
+
+  }\uElseIf{$\rho_k > \eta_2$ and $|d_k| = \Delta_k$}{
+
+    $\Delta_{k+1} = \min(\Delta_{\max}, \gamma_2\Delta_k)$ \tcp*[r]{good model, expand region}
+
+  }\Else{
+
+    $\Delta_{k+1} = \Delta_k$ \tcp*[r]{good enough model, same region}
+
+  }
+
+  \eIf{$\rho_k > \eta$}{
+
+    $x_{k+1} = x_k + d_k$ \tcp*[r]{accept step}
+
+  }{
+
+    $x_{k+1} = x_k$ \tcp*[r]{reject step}
+
+  }
+
+  $k \leftarrow k + 1$\;
+
+}
+
+\end{algorithm}
 
 \subsection{Trust-region subproblem}
 The TRS is of the form:\gs{
@@ -387,9 +533,93 @@ if $\Delta$ is small we can get our $\lambda^*$.
 In fact, 
  strong duality holds for any programs with  quadratic objective funcitons and exactly one quadratic constraints if Slater's condition holds (The proof of this is much more involved, see\ref{theo:Strong duality for quadratic programs}). 
 
-One can also use \textbf{conjugate gradient method} to solve the TRS.
+One can also use \textbf{conjugate gradient method (CGD)} to solve the TRS. The traditional CGD solves $Bx+g=0$ for symmetric and positive-definite $B$. The idea is to find a sequence of search directions $d_k$ that are $B$-conjugate, i.e. $\braket{d_i|B|d_j}=0$ for $i\neq j$ with an exact line search stepsize $$\alpha_k=\frac{\braket{d_k|g+B_kx_k}}{\braket{d_k|B|d_k}}$$  where
+the residue $$r_k:=g+Bx_k=r_{k-1}+\alpha_kBd_{k-1}$$ and the search direction is the Gram-Schmidt orthonormalization: $$d_k=-r_k+\sum_{j<k} \frac{\braket{r_k|B|d_j}}{\braket{d_j|B|d_{j}}}d_j$$Note that the residue $r_k$ is orthogonal to the search direction $d_j$ for $j<k$ and the search direction $d_k$ is $B$-orthogonal to the search direction $d_j$ for $j<k$. Thus the sequence of search directions are mutually $B$-orthogonal, and the sequence of residues are mutually orthogonal. With these in mind, we can simplify the update rule to the following form: \gs{
+  \alpha_k=\frac{\braket{r_k|r_k}}{\braket{d_k|B|d_k}}\\
+  x_{k+1}=x_k+\alpha_k d_k\\
+  r_{k+1}=r_k+\alpha_k B d_k\\
+  \beta_k=\frac{\braket{r_{k+1}|r_{k+1}}}{\braket{r_k|r_k}}\\
+  d_{k+1}=-r_{k+1}+\beta_k d_k
+}
+
+The \textbf{truncated CGD} is a modification of CGD to solve the TRS. If we get a solution $d_k$ that is outside the trust region, then we shrink the step size $\alpha_k$ to make sure $x_{k+1}$ is on the boundary of the trust region and stop. Also if the search direction $\braket{d_k|B|d_k}<0$, we just set the step size to make sure $x_{k+1}$ is on the boundary of the trust region and stop. In summary, we have the following algorithm:
+
+
+\begin{algorithm}[H]
+\caption{Truncated CGD for TRS}
+\label{alg:truncated_cgd}
+
+\SetKwBlock{Loop}{Loop}{}
+\KwIn{tolerance $\epsilon>0$, TR radius $\Delta$}
+\KwOut{The final point $x_k$}
+
+Initialize $k=0$, $x_0=0$, $r_0=g$, $d_0=-g$\;
+\If{$|d_0|\le \epsilon$}{
+  \textbf{return} $x_0$\;
+}
+
+\Loop{
+  \If{$\braket{d_k|B|d_k}\le 0$}{
+    $x_{k+1} = x_k + \tau d_k$ (choose $\tau \ge 0$ so that $|x_{k+1}|=\Delta$)\;
+    \textbf{return} $x_{k+1}$\;
+  }
+  $\alpha_k = \frac{\braket{r_k|r_k}}{\braket{d_k|B|d_k}}$\;
+  \If{$|x_k+\alpha_k d_k|\ge \Delta$}{
+    $x_{k+1} = x_k + \tau d_k$ (choose $\tau \ge 0$ so that $|x_{k+1}|=\Delta$)\;
+    \textbf{return} $x_{k+1}$\;
+  }
+  $x_{k+1} = x_k + \alpha_k d_k$\;
+  $r_{k+1} = r_k + \alpha_k B d_k$\;
+  \If{$|r_{k+1}| \le \epsilon$}{
+    \textbf{return} $x_{k+1}$\;
+  }
+  $\beta_{k} = \frac{\braket{r_{k+1}|r_{k+1}}}{\braket{r_k|r_k}}$\;
+  $d_{k+1} = -r_{k+1} + \beta_{k} d_k$\;
+  $k \leftarrow k + 1$\;
+}
+\end{algorithm}
+
+
+
+
+
+\thm{}{
+Truncated CGD is monotone: $m(x_k)$ is decreasing and $|x_k|$ is increasing(even in the truncated step)
+}
+
+A Cauchy point of $f$ with second-order approximation $m_k$ at $x_k$ is a point $x^C_k=x_k+d_k^C$ where $d_k^C=-\tau \nabla f(x_k)$ where $\tau>0$ is solution to the following 
+\gs{
+  \min_{\tau>0} m_k(-\tau \nabla f(x_k)) \st |\tau \nabla f(x_k)|\le \Delta_k
+}
+this is basically the exact line search point for $m_k(d)+I_{\oo_k}(d)$.
+
+\lem{Descent lemma for Cauchy point}{
+  \gs{m_k(0)-m_k(d_k^C)\ge \frac{1}{2}|\nabla f(x_k)|\min \hk{\Delta_k,\frac{|\nabla f(x_k)|}{|B_k|_2}}
+  }
+  In the case of CGD \gs{
+  m_k(0)-m_k(d_k)\ge c(m_k(0)-m_k(d_k^C))
+ }
+thus\gs{
+  m_k(0)-m_k(d_k)\ge \frac{c}{2}|\nabla f(x_k)|\min \hk{\Delta_k,\frac{|\nabla f(x_k)|}{|B_k|_2}}
+}
+}
 
 \subsection{Convergence analysis}
+\thm{}{If $B_k$ is uniformly bounded and $f$ is bounded from below and has a Lipschitz gradient on $\hk{f\le f(x_0)}$, the search direction satisfies \ref{theo:Descent lemma for Cauchy point}. If $\eta=0$ in \ref{alg:trust_region}, then $\liminf_k \nabla f(x_k)=0$; If $\eta>0$, then $\lim_k \nabla f(x_k)=0$.}
+
+\thm{}{
+
+}
+
+
+\chapter{Algorithm for constrained optimization}
+\section{Penalty method}
+
+\section{Augmented Lagrangian}
+
+\section{Interior-point method}
+
+\chapter{Compound methods}
 
 \section{Stochastic gradient descent}
 
@@ -578,19 +808,30 @@ If $f$ is also convex, we also have the following counterpart of \ref{theo:Prope
 \gs{  \kh{\nabla f(x)-\nabla f(y),x-y}\ge \frac{1}{L}\|\nabla f(x)-\nabla f(y)\|^2}
 \item $f$ is convex and $\nabla f$ is $L$-Lipschitz.
 \end{enumerate}}
-\pff{ As before $F_f(-,y)$ has same smoothness as $f$, so the twice Bregman divergence is \gs{D_{D_f(-,y)}(z,x)=D_f(z,y)-D_f(x,y)-\kh{\nabla f(x)-\nabla f(y),z-x}\le \frac{L}{2}|z-x|^2} The rest follows from  Cauchy-Schwarz inequality.
+\pff{ As before $F_f(-,y)$ has same smoothness as $f$, so the twice Bregman divergence is \gs{D_{D_f(-,y)}(z,x)=D_f(z,y)-D_f(x,y)-\kh{\nabla f(x)-\nabla f(y),z-x}\le \frac{L}{2}|z-x|^2}
 Convexity implies $D_f(z,y)\ge 0$, thus \gs{D_f(x,y)\ge \frac{1}{2L}|\nabla f(x)-\nabla f(y)|^2}
-}
+ The rest follows from  Cauchy-Schwarz inequality.}
 
-Now we consider strongly convex and Lipschitz smooth functions at the same time. We have the following important inequalities:\thm{Inequality for strong convex and Lipschitz smooth functions}{If $f$ is $\mu$-convex and $L$-smooth, for every $x,y$
+Now we consider strongly convex and Lipschitz smooth functions at the same time. We have the following important inequalities:\thm{Inequality for strong convex and Lipschitz smooth functions}{$f$ is $\mu$-convex and $L$-smooth is equivalent to the following:
+\begin{enumerate}
+\item $f$ is convex and for every $x,y$
 \gs{D_f(x,y)\ge \frac{\mu L}{2(\mu+L)}\|x-y\|^2+\frac{1}{2(\mu+L)}|\nabla f(x)-\nabla f(y)|^2}
-and 
+\item $f$ is convex and for every $x,y$
 \gs{\kh{\nabla f(x)-\nabla f(y),x-y}\ge \frac{\mu L}{\mu+L}\|x-y\|^2+\frac{1}{\mu+L}|\nabla f(x)-\nabla f(y)|^2
-}}
+}
+\end{enumerate}
+}
 \pff{ $f(x)-\frac{\mu}{2}\|x\|^2$ convex and $(L-\mu)$-smooth. Using cocoercivity in \ref{theo:Bailon-Haddad} we get
 \gs{D_f(x,y)-\frac{\mu}{2}|x-y|^2\ge \frac{1}{2(L-\mu)}|\nabla f(x)-\nabla f(y)-\mu(x-y)|^2}This gives
 \gs{LD_f(x,y)+\mu D_f(y,x)\ge \frac{\mu L}{2}|x-y|^2+ \frac{1}{2}|\nabla f(x)-\nabla f(y)|^2 }
 Since right hand side is symmetric in $x,y$, we can exchange $x,y$ to get \gs{(L+\mu)D_f(y,x)\ge \frac{\mu L}{2}|x-y|^2+ \frac{1}{2}|\nabla f(x)-\nabla f(y)|^2 }
+Using Cauchy-Schwartz inequality, 3 implies
+\gs{
+  \frac{|\nabla f(x)-\nabla f(y)|}{|x-y|}\ge \frac{\mu L}{\mu+L}+\frac{1}{\mu+L}\frac{|\nabla f(x)-\nabla f(y)|^2}{|x-y|^2}
+}
+thus 
+$$\frac{|\nabla f(x)-\nabla f(y)|}{|x-y|}\in [\mu,L]$$
+This implies $L$-smoothness. If $f$ is twice differentiable, then it is also $\mu$-convex. The general case is more involved and omitted here. 
 }
 
 \section{Subgradient and directional derivative}
