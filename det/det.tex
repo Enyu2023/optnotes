@@ -63,11 +63,14 @@ Also note the stablizer \gs{
 will flip the vectors of the form \gs{
     Y_2=\jz{0&0\\0&*}
 }but by our property (2), $\sigma$ acts on normal space by identity, so $Y_2$ is automatically in $T_XH$. 
+To summarize the tangent cone contains at least\gs{
+\jz{\Lambda\oo&*\\0&*}
+}
 
 Another way to see this is to consider the fibration\gs{
    \pi: \R^{m\times n}\to \text{sym}^+; X\mapsto XX^*
 }
-$\pi$ is not a submersion globally but it is when restricted to each fixed rank $s$ with fiber $O(s)$, so $h$ actually factors thru this map. Now it's not hard to see the vectors $Y_1+Y_2$ are exactly kernel of $d\pi$. (One can also use invariant theory to get this result, the factorization is actually globally smooth.)
+$\pi$ is not a submersion globally but it is when restricted to each fixed rank $s$ with fiber $O(s)$, so $h$ actually factors thru this map. Now it's not hard to see the vectors $Y_1+Y_2$ are exactly kernel of $d\pi$. (One can also use Schwartz's theorem in invariant theory to get this result, the factorization is actually globally smooth.)
 
 \section{Transverse intersection}
 Recall in section 1 we have a local diffeomorphism $\phi:\R^{m\times n} \subset V\times R^{(m-s)(n-s)}$ at $X$ that sends $U$ to $V\times \R^{(m-s)(n-s)}_{\le r}$ with $d_X\phi$ identity. Now we can flatten $\H$ in this coordinate. This is standard in geometry. For completeness we give a proof here.
