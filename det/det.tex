@@ -1,0 +1,91 @@
+\documentclass[]{note}
+\usepackage{CJKutf8}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{braket}
+\usepackage[ruled,vlined]{algorithm2e}
+\def\redd#1{\textcolor{red}{#1}}
+\def\dom{\text{dom}}
+\def\ri{\mathbf{Relint}}
+\title{{{On determinantal variety}}}
+
+\author{{{Li Enyu}}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\def\H{\mathscr H}
+\def\deter{\mathbb R_{\le r}^{m\times n}}
+\section{The determinantal variety}The determinantal variety $\mathbb R_{\le r}^{m\times n}$ consists of matrices $\R^{m\times n}$ with rank less than or equal to $r$. The natural action of $O(m)\times O(n)$ gives an orbit decomposition \gs{
+    \deter=\bigcup_{s\le r}\R_s^{m\times n}
+} where each orbit is the smooth manifold consists of matrice of fixed rank (There is also an explicit cell decomposition but we do not need here).
+Now  throuout this article let's fix a matrice with rank $s<r$ in an SVD coordinate \gs{
+    X=\jz{
+        \Lambda&0\\0&0
+    }
+}where $\Lambda$ is diagonal of order $r$. To visualize, note that a neighborhood of $X$ lies in $\bigcup_{\ge s}\R_s^{m\times n}$, namely there is a manifold part that preserving the rank, but also some direction that increasing rank, and the former forms the boundary of the latter. 
+Consider the diffeomorphism near a neighborhood of $X$\gs{
+\phi:U\to V\times \R_{\le r-s}^{(m-s)\times (n-s)}\subset\R^{s(m+n-s)}\times \R_{\le r-s}^{(m-s)\times (n-s)},\jz{A&B\\C&D}\mapsto (A,B,C| D/A)
+}Here $D/A=D-CA^{-1}B$.
+This implies locally $\R_{\le r}^{m\times n}$ \textbf{is a product of the manifold part and singular part}. Also note $d\phi$ is identity at $X$.
+
+The tangent space $T_X\R^{m\times n}_s$ consists of matrices \gs{
+    Y_1=\jz{*&*\\ *&0}
+}(
+Throughout this article $*$ means arbitrary matrices.)
+But the total tangent cone in $\deter$ consists of \gs{
+    Y_2=\jz{*&*\\ *&D}, \text{rank}{D}\le r-s
+}
+
+\section{The invariant manifold}
+Now consider a constraint $h:\R^{m\times n}\to \R^k$ that has constant rank and is invariant under the right action of $O(n)$. This implies the regular level set $\H=h^{-1}(0)$ has following properties:
+\begin{enumerate}
+    \item $\H$ is invariant under action of $O(n)$. 
+
+    \item The stablizer $G_X$ acts on $N_X\H$ by identity. 
+\end{enumerate}
+These are \textbf{the only qualifications} we need. (In fact for transverality, 2 is enough)
+The action of $O(n)$ gives a fundamental vector field on $\R_s^{m\times n}$, at $X$ this gives following tangent vector:
+\gs{
+    Y_1=\jz{
+        \Lambda&0\\0&0
+    }\Omega_0= \jz{
+        \Lambda \Omega&*\\0&0
+    }, \oo_0\in \mathfrak{so}_n,\oo\in \mathfrak{so}_s
+}(i.e. here $\Omega_0$ and $\oo$ are skew-symmetric matrices.)
+
+Also note the stablizer \gs{
+    \sigma=\jz{0&0\\0&-I}\in O(n)_X
+}
+will flip the vectors of the form \gs{
+    Y_2=\jz{0&0\\0&*}
+}but by our property (2), $\sigma$ acts on normal space by identity, so $Y_2$ is automatically in $T_XH$. 
+
+Another way to see this is to consider the fibration\gs{
+   \pi: \R^{m\times n}\to \text{sym}^+; X\mapsto XX^*
+}
+$\pi$ is not a submersion globally but it is when restricted to each fixed rank $s$ with fiber $O(s)$, so $h$ actually factors thru this map. Now it's not hard to see the vectors $Y_1+Y_2$ are exactly kernel of $d\pi$. (One can also use invariant theory to get this result, the factorization is actually globally smooth.)
+
+\section{Transverse intersection}
+Recall in section 1 we have a local diffeomorphism $\phi:\R^{m\times n} \subset V\times R^{(m-s)(n-s)}$ at $X$ that sends $U$ to $V\times \R^{(m-s)(n-s)}_{\le r}$ with $d_X\phi$ identity. Now we can flatten $\H$ in this coordinate. This is standard in geometry. For completeness we give a proof here.
+
+The projection $f:\H\cap \yk{V\times R^{(m-s)(n-s)}}\to R^{(m-s)(n-s)}$ is a submersion at $X$. Let $p$ be a projection of $V$ onto $\ker (d_X f)=T_X\H\cap \yk{V\times 0}$ and $q$ be its complement. Consider \gs{
+    \psi:\H\cap \yk{V\times R^{(m-s)(n-s)}}\to \ker d_Xf\times R^{(m-s)(n-s)}, (x,y)\mapsto (p(x),y)
+}This is a chart of $\H$ s.t. its locally a product. Now we know that under this chart, 
+\gs{
+     \R_{\le r}^{mn}=& V\times \R^{(m-s)(n-s)}_{\le r}=\hk{\jz{*&*\\ *&D}:\text{rank}(D)\le r-s}\\ \H=&\H^s\times \R^{(m-s)(n-s)}=\hk{\jz{ A&* \\ B&*}:(A,B)\in \H^s}
+}where $\H^s$ is some manifold in $\R^{s(m+n-s)}$. Now its clear  that their intersection is transverse as they are transeverse in first component and at second components is an inclusion $\R^{(m-s)(n-s)}_{\le r}\subset \R^{(m-s)(n-s)}$. As a consequence
+\gs{
+    T_X\yk{\R_{\le r}^{mn}\cap \H}=&T_X\yk{\R_{\le r}^{mn}}\cap T_X\H
+}
+This immediately gives the Theorem 1 in \cite{pap}
+\begin{thebibliography}{9}
+
+\bibitem{pap} Yang, Y., Gao, B. \& Yuan, Yx. A space-decoupling framework for optimization on bounded-rank matrices with orthogonally invariant constraints. Math. Program. (2026).
+
+\end{thebibliography}
+
+\end{document}
