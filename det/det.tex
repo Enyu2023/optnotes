@@ -29,16 +29,16 @@ Now  throughout this article let's fix a matrice with rank $s\le r$ in an SVD co
     }
 }where $\Lambda$ is diagonal of order $r$. To visualize, note that a neighborhood of $X$ lies in $\bigcup_{k\ge s}\R_k^{m\times n}$, namely there is a manifold part that preserving the rank, but also some directions that increasing rank, and the former forms the boundary of the latter. 
 Consider the diffeomorphism near a neighborhood of $X$\gs{
-\phi:U\to V\times \R_{\le r-s}^{(m-s)\times (n-s)}\subset\R^{s(m+n-s)}\times \R_{\le r-s}^{(m-s)\times (n-s)},\jz{A&B\\C&D}\mapsto (A,B,C| D/A)
-}Here $D/A=D-CA^{-1}B$.
+\phi:U\to V\times \R_{\le r-s}^{(m-s)\times (n-s)}\subset\R^{s(m+n-s)}\times \R_{\le r-s}^{(m-s)\times (n-s)},\jz{A&B\\C&D}\mapsto \jz{A&B\\C& D/A}
+}Here $D/A=D-CA^{-1}B$ is the Schur complement.
 This implies locally $\R_{\le r}^{m\times n}$ \textbf{is a product of the manifold part and singular part}. Also note $d\phi$ is identity at $X$.
 
 The tangent space $T_X\R^{m\times n}_s$ consists of matrices \gs{
-    Y_1=\jz{*&*\\ *&0}
+    \jz{*&*\\ *&0}
 }(
 Throughout this article $*$ means arbitrary matrices.)
 But the total tangent cone in $\deter$ consists of \gs{
-    Y_2=\jz{*&*\\ *&D}, \text{rank}{D}\le r-s
+    Y=\jz{*&*\\ *&D}, \text{rank}{D}\le r-s
 }
 
 \section{The invariant manifold}
@@ -68,75 +68,158 @@ To summarize the tangent cone contains at least\gs{
 \jz{\Lambda\oo&*\\0&*}
 }
 
-Another way to see this is to consider the fibration\gs{
-   \pi: \R^{m\times n}\to \text{Sym}^+; X\mapsto XX^*
-}
-$\pi$ is not a submersion globally but it is when restricted to each fixed rank $s$ with fiber $\St(s,n)$, so $h$ actually factors thru this map. Now it's not hard to see the vectors $Y_1+Y_2$ are exactly kernel of $d\pi$. (One can also use Schwartz's theorem in invariant theory to get this result, the factorization is actually globally smooth.)
 
-\section{Transverse intersection}
+Another way to see this is to note that $h$ is just an $m$-variable function of vectors $(v_1,\cdots,v_m)$ in $\R^n$ that is invariant under orthogonal transformation, thus the value of $h$ are uniquely determined by their Gram matrix $\hk{\braket{v_i,v_j}}$. 
+In orther words, consider the map\gs{
+   \pi: \R^{m\times n}\to \text{Sym}^+; X\mapsto XX^t
+}then there is a factorization $h=\bar h\circ \pi$. To see smoothness, note that although
+$\pi$ is not a submersion globally,  it is a submersion when restricted to each fixed rank $s$ ( It's actually a fiber bundle with fiber $\St(s,n)$):\gs{
+    \pi_s: \R^{mn}_s\to \mathrm{Sym}^+_s
+} so $h$, when resricted to each fixed rank $s$, actually factors thru this map smoothly. Now it's not hard to see the vectors \gs{Y_1+Y_2=\jz{\Lambda\oo&*\\0&*}} are exactly kernel of $d\pi_s$. 
+
+One can also use Schwartz's theorem in invariant theory to get this result:
+every $G$-invariant map is a smooth map of its polynomial invariants\cite{sch}. In the $O(n)$ case, the First Fundamental Theorem (FFT) for the orthogonal group 
+ states that all polynomial invariants are polynomials of indices of $XX^t$\cite{weyl}.
+  Thus there is a smooth factorization $\bar h:\mathrm{Sym}^+\to \R^k$.
+
+Finally we give an explicit expression of the tangent space. Consider the manifold \gs{R^{ms}\times 0=\hk{\jz{*&0\\ *&0}}} which is transverse to $\H$. Let $\H^s=\H\cap (R^{ms}\times 0)$, then we can write\gs{
+    T\H=\hk{\jz{H_1&*\\ H_2&*},(H_1,H_2)\in T_X\H^s}
+}
+
+
+  \section{Transverse intersection}
 Recall in section 1 we have a local diffeomorphism $\phi:\R^{m\times n} \subset V\times \R^{(m-s)(n-s)}$ at $X$ that sends $U$ to $V\times \R^{(m-s)(n-s)}_{\le r-s}$ with $d_X\phi$ identity. Now we can flatten $\H$ in this coordinate. This is standard in geometry. For completeness we give a proof here.
 
 The projection $q:\H\cap \yk{V\times \R^{(m-s)(n-s)}}\to \R^{(m-s)(n-s)}$ is a submersion at $X$. Let $p$ be a projection of $V$ onto $\ker (d_X q)=T_X\H\cap \yk{V\times 0}$ and $q$ be its complement. Consider \gs{
     \psi:\H\cap \yk{V\times \R^{(m-s)(n-s)}}\to \ker d_Xq\times \R^{(m-s)(n-s)}, (x,y)\mapsto (p(x),y)
 }This is a chart of $\H$ s.t. it is locally a product. Now we know that under this chart, 
 \gs{
-     \R_{\le r}^{mn}=& V\times \R^{(m-s)(n-s)}_{\le r-s}=\hk{\jz{*&*\\ *&D}:\text{rank}(D)\le r-s}\\ \H=&\H^s\times \R^{(m-s)(n-s)}=\hk{\jz{ A&* \\ B&*}:(A,B)\in \H^s}
-}where $\H^s$ is some manifold in $\R^{s(m+n-s)}$. Now its clear  that their intersection is transverse as they are transverse in the first component and at the second component there is an inclusion $\R^{(m-s)(n-s)}_{\le r}\subset \R^{(m-s)(n-s)}$. As a consequence
+     \R_{\le r}^{m\times n}=& V\times \R^{(m-s)(n-s)}_{\le r-s}=\hk{\jz{*&*\\ *&D}:\text{rank}(D)\le r-s}\\ \H=&\H^s\times \R^{(m-s)(n-s)}=\hk{\jz{ A&* \\ B&*}:(A,B)\in \H^s}
+}where $\H^s$ is some manifold in $\R^{ms}$. Now its clear  that their intersection is transverse as they are transverse in the first component and at the second component there is an inclusion $\R^{(m-s)(n-s)}_{\le r}\subset \R^{(m-s)(n-s)}$. As a consequence
 \gs{
-    T_X\yk{\R_{\le r}^{mn}\cap \H}=&T_X\yk{\R_{\le r}^{mn}}\cap T_X\H
+    T_X\yk{\R_{\le r}^{m\times n}\cap \H}=&T_X\yk{\R_{\le r}^{m\times n}}\cap T_X\H
 }
 This immediately gives the Theorem 1 in \cite{pap}
 
 \section{Designularization}
-The space $\deter$ is stratified, and each strata fibers over $\mathrm{Gr}_r(n)$, but not globally. To blowup up the singularity we consider\gs{
-    M=\hk{(X,V)\in \R^{m\times n}\times \mathrm{Gr}_r(n):col(X)\subset V }\to \mathrm{Gr}_r(n)
-}this is just $n$-th sum of the tautological bundles which is smooth with the fiber $L(\R^n,V)=\R^{nr}$.
-We use Schubert cell to give local chart of $\mathrm{G_r}(n )  $. Locally a vector space $V$ is 1-1 corresponds to an echelon form, 
+The space $\deter$ is stratified, and each strata fibers over $\mathrm{Gr}_r(n)$, but not globally. We can view them as tuples $(v_1,\cdots,v_m)$, and at a sigularity some vector crashes into the span of the rest. To blowup up the singularity we need to add information to recover the direction of the crash: i.e. we record the $r$-plane that contains the current plane. With this intuition in mind, consider\gs{
+    M=\hk{(X,V)\in \R^{m\times n}\times \mathrm{Gr}_r(n):row(X)\subset V }\to \mathrm{Gr}_r(n)
+}this is just the total space of the $m$-th sum of the tautological bundles $\gamma^1_n$ \gs{
+\hom(\R^m,\gamma^1_n)=(\gamma^1_n)^{\oplus m}
+} which is smooth with the fiber $\hom(\R^m,V)=\R^{mr}$.
+
+The desingularization is given by the projector onto the fiber direction \gs{
+    &\Phi:M\to \R^{m\times n}_{\le r}\\&[(A,AG),V_G]\mapsto (A,AG)
+}Thus $M$ indeed gives us a reparametrization of the space $\R_{\le r}^{mn}$.
+ Note that \gs{\Phi^{-1}(X)=\hk{V\in \mathrm{Gr}_r(n):row(X)\subset V}=\mathrm{Gr}_{r-s}(n-s)}and $\Phi$ is diffeomorphism on smooth part $\R_r^{mn}$
+
+
+We use Schubert cell to give local chart of $\mathrm{Gr}_r(n )  $  and $M$. Locally a vector space $V$ is 1-1 corresponds to an echelon form, 
 again WLG we look at a fixed point\gs{
-    V_0=\jz{I&0\\ 0& 0}\in \mathrm{Gr}_r(n)
+    V_0=\jz{I_r&0\\ 0& 0}\in \mathrm{Gr}_r(n)
 }
 a local chart is
 \gs{
-   \hk{ V_M=\jz{I_r&0\\ M&0}}\subset \mathrm{Gr}_r(n)
+   \hk{ V_G=\jz{I_r&G\\ 0&0}}\subset \mathrm{Gr}_r(n)
 }
-and the fiber at $V_M$ consists of \gs{
-F_{V_M}=\jz{I_r&0\\ M&0}\jz{A\\B}=\jz{A\\MA}
+and the fiber at $V_G$ consists of \gs{
+F_{V_G}=A\jz{I_r&G\\ 0&0}=\jz{A&AG}
 }
-The tangent space of fiber at \gs{p=(X,V_0),X=\jz{I_r&0\\ 0&0}} is\gs{
-   T_pF_{V_0}=\hk{ \jz{A_1&A_2\\M&0}}
+Thus a chart of the total space is just \gs{(A,G)\mapsto [(A,AG),V_G]}
+
+We also give an explicit correspondence of Schubert coordinate and the projection coordinate used in \cite{pap}: for $(I_r,G)$, perform an $LQ$-decomposition\gs{
+    (I_r,G)=L_GQ_G
+}
+where $Q_G\in \mathrm{St}_r(n)$ is $r\times n$ with rows orthorgonal and $L_G$ is $r\times r$ lower triangular. Both smoothly rely on $G$. The matrice $Q_G^tQ_G\in \mathrm{Sym}_r^+(n)$ is then a projector onto $V_G$.
+
+
+Let's fix a point in $M$: \gs{p=(X,V_0),X=\jz{I_s&0\\ 0&0}} 
+The tangent space along the fiber is\gs{
+   T_pF_{V_0}=\hk{ \jz{A&0}}
 } 
+and the total tangent space is\gs{
+    T_pM=\hk{
+        \fk{ \jz{A_{sr}&G_{s(n-r)}\\A_{(m-s)r}&0}
+        ,
+        \jz{0_r&G\\0&0}
+        }
+    }
+}
+here the $G_{s(n-r)}$ is first $s$ rows of $G$.
+
 
 Now consider \gs{
-    M_h=\yk{\H\times \mathrm{Gr}_r(n)}\cap M=\hk{(X,V)\in \H\times \mathrm{Gr}_r(n):col(X)\subset V }\to \mathrm{Gr}_r(n)
+    M_h=\yk{\H\times \mathrm{Gr}_r(n)}\cap M=\hk{(X,V)\in \H\times \mathrm{Gr}_r(n):row(X)\subset V }\to \mathrm{Gr}_r(n)
 }
 Using our computation of tangent space of $\H$, we know this intersection is transverse to the fiber, i.e. \gs{
-    T_{p}(\H)+T_{(X,V_0)}(F_{p})=T_pM
-}So $M_h \to\mathrm{Gr}_r(n)$ is a submersion (In fact one can show this is a smooth fibration). It also follows that $M_h$ is a smooth embedded manifold.  
+    T_{p}(\H)+T_{p}(F_{V_0})=T_pM
+}So $M_h \to\mathrm{Gr}_r(n)$ is a submersion. It also follows that $M_h$ is a smooth embedded manifold. Since $M_h$ is closed submanifold of Euclidien space, it is also complete. Also, since for any compact $K$, $\Phi^{-1}(K)$ is closed in $K\times \mathrm{Gr}_r(n)$, $\Phi$ must be proper (this already implies $\Phi$ is a fiber bundle by Ehresmann's lemma, we will give an explicit trivialization later). 
 
-The tangent space of $M_h$ is \gs{
-   \hk{ \yk{\jz{H_1&A_2\\H_2&0 },\jz{0&0\\M&0}} (H_1,H_2)\in T\H^r}
+We now perform a $LQ$-decomposition to $(I_r,G)$:\gs{
+    \jz{I_r&G\\ 0&I_{n-r}}=\jz{L_G&0\\ *&L_G'}{Q_G}
+}where $L_G$ is lower-triangular and $Q_G$ is orthorgonal, both smoothly rely on $G$. Since $h$ is $Q_G$ invariant, we have $h(A(I_r,G))=0\iff h(A(L_G,0))=0 $.
+ A local chart of $M_h$ near $p$ is then given by\gs{
+    \hk{ \fk{\jz{A&AG_1},\jz{0&G\\0&0}},h\yk{{A}L_G,0}=0,G=(G_1,G_2)^t}
+ } substitute $(A,G)\to (AL_G,G)=(\bar A,G)$, we have\gs{
+    \hk{ \fk{\jz{\bar AL_G^{-1}&\bar AL_G^{-1}G_1},\jz{0&G\\0&0}},h\yk{{\bar A},0}=0,G=(G_1,G_2)^t}
+ }
+
+The tangent space of $M_h$ at $p$ is \gs{
+   T_p(M_h)=\hk{ \yk{\jz{H_1&*&G_{s(n-r)}\\H_2&*&0 },\jz{0&G\\0&0}} (H_1,H_2)\in T_X\H^s}
 }
 This is different from \cite{pap} because we use different charts on Grassmanian.
 
 \section{Riemannian optimization}
 We can pullback the problem as \gs{
-    \min_{M_h}\bar f=f\phi
+    \min_{M_h}\bar f=f\Phi
 }
-where \gs{\phi:M_h\subset \R^{mn}\times \mathrm{Gr}_r(n)\to \R_{\le r}^{mn}}
+where \gs{\Phi:M_h\subset \R^{m\times n}\times \mathrm{Gr}_r(n)\to \R_{\le r}^{m\times n}}
+But now we need to figure out the behavious of $\Phi$.
+The pushforward of $\Phi$ is exactly the first component of tangent space. Thus $\Phi$ will not be a submersion if $s\neq r$: the right-lower part of $d\Phi(T_pM_h)$ is $\R^{(m-s)(r-s)}\times 0$, so the right-lower part of $T(\R^{m\times b}_{\le r}\cap\H)$ i.e. the cone $\R^{(m-s)\times (n-s)}_{\le r-s}$, is not fully represented. This gives $1\TO 1$ of theorem 3 in \cite{pap}.
 
+But we can save this by consider the second order behavior. Locally near $p$, a trivialization is
+\gs{\jz{AL_G^{-1}&BL_G^{-1}&AL_G^{-1}G_1+BL_G^{-1}G_2\\CL_G^{-1}&DL_G^{-1}&CL_G^{-1}G_1+DL_G^{-1}G_2},h\yk{\jz{A&B&0\\C&D&0}}=0}In particular, note that $h$ is submersion onto $\R^{m(n-s)}$ so $B,D$ are free coordinates, we can take $B=0,G_1=0$ \gs{
+    \jz{AL_G^{-1}&0&0\\CL_G^{-1}&DL_G^{-1}&DL_G^{-1}G_2},h\yk{\jz{A&0&0\\C&D&0}}=0
+}Here we can use implicit function theorem so that $A,C$ relies on $D$ and some free parameter, namely $A(D,*),C(D,*)$.
+Notice that\gs{L_G=I_r+O(|G|^2) } 
+Now consider the matrice ${\epsilon}D$ and $\frac1\epsilon G$. The Taylor expansion along this direction is\gs{
+    \jz{\partial^2_DA\cdot D^2&0&0\\\partial^2_DC\cdot D^2&0&0}\epsilon^2+\jz{\p_D A\cdot D &0&0\\ \p_D C\cdot D&D&0}\epsilon+\jz{0&0&0\\0&0&D G_2}+o(|G|^2+|D|^2)
+}
+The second order condition\gs{(f\circ\Phi(\gamma))''=f''(\Phi(\gamma))'+f'(\Phi(\gamma))''\ge 0} together with the first order condition\gs{
+    f'\yk{\jz{H_1&*&*\\H_2&D &0}}=0 ,(H_1,H_2)\in T_X\H^s
+} 
+implies\gs{
+    &f''\yk{\jz{A&0&0\\C&D &0}\epsilon}+f'\yk{
+    \jz{\partial^2_DA\cdot D^2&0&0\\\partial^2_DC\cdot D^2&0&0}\epsilon^2}+f'\yk{\jz{0&0&0\\0&0&D G_2}
+    }\\=& f''\yk{\jz{A&0&0\\C&D &0}\epsilon}+f'\yk{
+    \jz{\partial^2_DA\cdot D^2&0&0\\\partial^2_DC\cdot D^2&0&0}\epsilon^2}+f'\yk{\jz{0&0&0\\0&D&D G_2}
+    }\\\ge & 0
+    }
+for every $\epsilon$. Since epsilon is arbitary, 
+\gs{f'\yk{\jz{0&0&0\\0&D&D G_2}
+}\ge 0
+}But this is true for $-D$, so
+\gs{f'\yk{\jz{0&0&0\\0&D&D G_2}
+}= 0
+}
+The matrices $D(I_{r-s},G_2)$ form a dense subset of $\R_{\le r-s}^{m-s\times n-s}$ and 
+in particular, 
+has the same span as the right-lower part of the tangent cone of $\R_{\le r}^{m\times n}$. 
+As a consequence, 
+This give $2\TO 1$ of theorem 3.
 
-
-
-
-But now we need to figure out the behavious of $\phi$.
-The pushforward of $\phi$ is exactly the first component of tangent space. Thus this will not be a submersion if \gs{
-    \jz{H_1&A_2\\H_2&0}
+\section{Computation of Riemannian derivatives}
+The metric on Grassmanian is endowed by the metric of $\mathrm{{Sym}}^+$ \gs{
+Q^t_GQ_G
 }
 
 \begin{thebibliography}{9}
 
 \bibitem{pap} Yang, Y., Gao, B. \& Yuan, Yx. A space-decoupling framework for optimization on bounded-rank matrices with orthogonally invariant constraints. Math. Program. (2026).
 
+\bibitem{sch} https://mathoverflow.net/questions/472581/a-variant-of-schwarzs-theorem-on-generators-of-smooth-g-invariant-functions
+
+\bibitem{weyl} https://mathoverflow.net/questions/364423/invariant-theory-for-the-orthogonal-group-and-clifford-algebras
 \end{thebibliography}
 
 \end{document}
