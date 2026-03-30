@@ -141,7 +141,7 @@ and the total tangent space is\gs{
     T_pM=\hk{
         \fk{ \jz{A_{sr}&G_{s(n-r)}\\A_{(m-s)r}&0}
         ,
-        \jz{0_r&G\\0&0}
+        \jz{0_r&G}
         }
     }
 }
@@ -155,17 +155,17 @@ Using our computation of tangent space of $\H$, we know this intersection is tra
     T_{p}(\H)+T_{p}(F_{V_0})=T_pM
 }So $M_h \to\mathrm{Gr}_r(n)$ is a submersion. It also follows that $M_h$ is a smooth embedded manifold. Since $M_h$ is closed submanifold of Euclidien space, it is also complete. Also, since for any compact $K$, $\Phi^{-1}(K)$ is closed in $K\times \mathrm{Gr}_r(n)$, $\Phi$ must be proper (this already implies $\Phi$ is a fiber bundle by Ehresmann's lemma, we will give an explicit trivialization later). 
 
-We now perform a $LQ$-decomposition to $(I_r,G)$:\gs{
+We now perform an $LQ$-decomposition to $(I_r,G)$:\gs{
     \jz{I_r&G}=\jz{L_G&0}{Q_G}
 }where $L_G$ is lower-triangular and $Q_G\in O(n)$, both can be chosen smoothly rely on $G$. Since $h$ is $Q_G$ invariant, we have $h(A(I_r,G))=0\iff h(A(L_G,0))=0 $.
  A local chart of $M_h$ near $p$ is then given by\gs{
-    \hk{ \fk{\jz{A&AG_1},\jz{0&G\\0&0}},h\yk{{A}L_G,0}=0,G=(G_1,G_2)^t}
+    \hk{ \fk{\jz{A&AG_1},\jz{0&G}},h\yk{{A}L_G,0}=0,G=\jz{G_1\\G_2}}
  } substitute $(A,G)\to (AL_G,G)=(\bar A,G)$, we have\gs{
-    \hk{ \fk{\jz{\bar AL_G^{-1}&\bar AL_G^{-1}G_1},\jz{0&G\\0&0}},h\yk{{\bar A},0}=0,G=(G_1,G_2)^t}
+    \hk{ \fk{\jz{\bar AL_G^{-1}&\bar AL_G^{-1}G_1},\jz{0&G}},h\yk{{\bar A},0}=0,G=\jz{G_1\\G_2}}
  }
 
 The tangent space of $M_h$ at $p$ is \gs{
-   T_p(M_h)=\hk{ \yk{\jz{H_1&*&G_{s(n-r)}\\H_2&*&0 },\jz{0&G\\0&0}} (H_1,H_2)\in T_X\H^s}
+   T_p(M_h)=\hk{ \yk{\jz{H_1&*&G_{s(n-r)}\\H_2&*&0 },\jz{0&G}} (H_1,H_2)\in T_X\H^s}
 }
 This is different from \cite{pap} because we use different charts on Grassmanian.
 
@@ -178,13 +178,19 @@ But now we need to figure out the behavious of $\Phi$.
 The pushforward of $\Phi$ is exactly the first component of tangent space. Thus $\Phi$ will not be a submersion if $s\neq r$: the right-lower part of $d\Phi(T_pM_h)$ is $\R^{(m-s)(r-s)}\times 0$, so the right-lower part of $T(\R^{m\times b}_{\le r}\cap\H)$ i.e. the cone $\R^{(m-s)\times (n-s)}_{\le r-s}$, is not fully represented. This gives $1\TO 1$ of theorem 3 in \cite{pap}.
 
 But we can save this by consider the second order behavior. Locally near $p$, a trivialization is
-\gs{\jz{A(L_{G}^{-1})_1&B(L_{G}^{-1})_2&A(L_{G}^{-1})_1G_1+B(L_{G}^{-1})_2G_2\\C(L_{G}^{-1})_1&D(L_G^{-1})_2&C(L_G^{-1})_1G_1+D(L_G^{-1})_2G_2},h\yk{\jz{A&B&0\\C&D&0}}=0}
+\gs{&\fk{
+    \jz{A(L_{G}^{-1})_1&B(L_{G}^{-1})_2&A(L_{G}^{-1})_1G_1+B(L_{G}^{-1})_2G_2\\C(L_{G}^{-1})_1&D(L_G^{-1})_2&C(L_G^{-1})_1G_1+D(L_G^{-1})_2G_2}
+,
+\jz{I_s&0&G_1\\0&I_{r-s}&G_2}
+}
+    \\&
+    h\yk{\jz{A&B&0\\C&D&0}}=0}
 here $$(L_G)^{-1}=\jz{(L_G^{-1})_1\\(L_G^{-1})_2}$$
-In particular, note that $h$ is submersion onto $\R^{m(n-s)}$ so $B,D$ are free coordinates, we can use implicit function theorem so that $A,C$ relies on $D$ and some free parameter $E$, namely $A(D,E),C(D,E)$. So understood $A,C$ \textbf{as a function}, a local parametrization is \gs{(B,D,G,E)\mapsto
+In particular, note that $h$ is submersion onto $\R^{m(n-s)}$ so $B,D$ are free coordinates, we can use implicit function theorem so that $A,C$ relies on $D$ and some free parameter $E$, namely $A(D,E),C(D,E)$. So understood $A,C$ \textbf{as a function}, a local parametrization of $\Phi$ is \gs{(B,D,G,E)\mapsto
     \jz{A(L_{G}^{-1})_1&B(L_{G}^{-1})_2&A(L_{G}^{-1})_1G_1+B(L_{G}^{-1})_2G_2\\C(L_{G}^{-1})_1&D(L_G^{-1})_2&C(L_G^{-1})_1G_1+D(L_G^{-1})_2G_2}
 }
 In particular, we can fix $B=0,G_1=0,E=0$.
-Notice that in this case\gs{(L_G)^{-1}=\jz{I_s&0\\0&(L_{G_2})^{-1}},(L_G^{-1})_1=(I_s,0),(L_{G}^{-1})_2=I_r+O(|G_2|^2) } so along this direction
+Notice that in this case\gs{L_G=\jz{I_s&0\\0&L_{G_2}{}},(L_G^{-1})_1=(I_s,0),(L_{G}^{-1})_2=I_r+O(|G_2|^2) } so along this direction
  \gs{
     (G_2,D)\mapsto \jz{A&0&0\\C&DL_{G_2}^{-1}&DL_{G_2}^{-1}G_2}
 }
