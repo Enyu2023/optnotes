@@ -69,7 +69,7 @@ To summarize the tangent cone contains at least\gs{
 }
 
 
-Another way to see this is to note that $h$ is just an $m$-variable function of vectors $(v_1,\cdots,v_m)$ in $\R^n$ that is invariant under orthogonal transformation, thus the value of $h$ are uniquely determined by their Gram matrix $\hk{\braket{v_i,v_j}}$. 
+Another way to see this is to note that $h$ is just an $m$-variable function of vectors $(v_1,\cdots,v_m)$ in $\R^n$ that is invariant under orthogonal transformation, i.e. $h$ relies on the relative configuration of the tuple, which is uniquely determined by their Gram matrix $\hk{\braket{v_i,v_j}}$. 
 In orther words, consider the map\gs{
    \pi: \R^{m\times n}\to \text{Sym}^+; X\mapsto XX^t
 }then there is a factorization $h=\bar h\circ \pi$. To see smoothness, note that although
@@ -102,7 +102,7 @@ The projection $q:\H\cap \yk{V\times \R^{(m-s)(n-s)}}\to \R^{(m-s)(n-s)}$ is a s
 This immediately gives the Theorem 1 in \cite{pap}
 
 \section{Designularization}
-The space $\deter$ is stratified, and each strata fibers over $\mathrm{Gr}_r(n)$, but not globally. We can view them as tuples $(v_1,\cdots,v_m)$, and at a sigularity some vector crashes into the span of the rest. To blowup up the singularity we need to add information to recover the direction of the crash: i.e. we record the $r$-plane that contains the current plane. With this intuition in mind, consider\gs{
+The space $\deter$ is stratified, and each strata $\R_s^{m\times n}$ fibers over $\mathrm{Gr}_s(n)$, but not globally. We can view them as configuration of tuples $(v_1,\cdots,v_m)$, and at a sigularity some vector crashes into the span of the rest. To blowup up the singularity we need to add information to recover the direction of the crash: i.e. we record the $r$-plane that contains the current plane. With this intuition in mind, consider\gs{
     M=\hk{(X,V)\in \R^{m\times n}\times \mathrm{Gr}_r(n):row(X)\subset V }\to \mathrm{Gr}_r(n)
 }this is just the total space of the $m$-th sum of the tautological bundles $\gamma^1_n$ \gs{
 \hom(\R^m,\gamma^1_n)=(\gamma^1_n)^{\oplus m}
@@ -116,14 +116,14 @@ The desingularization is given by the projector onto the fiber direction \gs{
 
 We use Schubert cell to give local chart of $\mathrm{Gr}_r(n )  $  and $M$. Locally a vector space $V$ is 1-1 corresponds to an echelon form, 
 again WLG we look at a fixed point\gs{
-    V_0=\jz{I_r&0\\ 0& 0}\in \mathrm{Gr}_r(n)
+    V_0=\jz{I_r&0}\in \mathrm{Gr}_r(n)
 }
 a local chart is
 \gs{
-   \hk{ V_G=\jz{I_r&G\\ 0&0}}\subset \mathrm{Gr}_r(n)
+   \hk{ V_G=\jz{I_r&G}}\subset \mathrm{Gr}_r(n)
 }
 and the fiber at $V_G$ consists of \gs{
-F_{V_G}=A\jz{I_r&G\\ 0&0}=\jz{A&AG}
+F_{V_G}=A\jz{I_r&G}=\jz{A&AG}
 }
 Thus a chart of the total space is just \gs{(A,G)\mapsto [(A,AG),V_G]}
 
@@ -156,8 +156,8 @@ Using our computation of tangent space of $\H$, we know this intersection is tra
 }So $M_h \to\mathrm{Gr}_r(n)$ is a submersion. It also follows that $M_h$ is a smooth embedded manifold. Since $M_h$ is closed submanifold of Euclidien space, it is also complete. Also, since for any compact $K$, $\Phi^{-1}(K)$ is closed in $K\times \mathrm{Gr}_r(n)$, $\Phi$ must be proper (this already implies $\Phi$ is a fiber bundle by Ehresmann's lemma, we will give an explicit trivialization later). 
 
 We now perform a $LQ$-decomposition to $(I_r,G)$:\gs{
-    \jz{I_r&G\\ 0&I_{n-r}}=\jz{L_G&0\\ *&L_G'}{Q_G}
-}where $L_G$ is lower-triangular and $Q_G$ is orthorgonal, both smoothly rely on $G$. Since $h$ is $Q_G$ invariant, we have $h(A(I_r,G))=0\iff h(A(L_G,0))=0 $.
+    \jz{I_r&G}=\jz{L_G&0}{Q_G}
+}where $L_G$ is lower-triangular and $Q_G\in O(n)$, both can be chosen smoothly rely on $G$. Since $h$ is $Q_G$ invariant, we have $h(A(I_r,G))=0\iff h(A(L_G,0))=0 $.
  A local chart of $M_h$ near $p$ is then given by\gs{
     \hk{ \fk{\jz{A&AG_1},\jz{0&G\\0&0}},h\yk{{A}L_G,0}=0,G=(G_1,G_2)^t}
  } substitute $(A,G)\to (AL_G,G)=(\bar A,G)$, we have\gs{
@@ -178,11 +178,18 @@ But now we need to figure out the behavious of $\Phi$.
 The pushforward of $\Phi$ is exactly the first component of tangent space. Thus $\Phi$ will not be a submersion if $s\neq r$: the right-lower part of $d\Phi(T_pM_h)$ is $\R^{(m-s)(r-s)}\times 0$, so the right-lower part of $T(\R^{m\times b}_{\le r}\cap\H)$ i.e. the cone $\R^{(m-s)\times (n-s)}_{\le r-s}$, is not fully represented. This gives $1\TO 1$ of theorem 3 in \cite{pap}.
 
 But we can save this by consider the second order behavior. Locally near $p$, a trivialization is
-\gs{\jz{AL_G^{-1}&BL_G^{-1}&AL_G^{-1}G_1+BL_G^{-1}G_2\\CL_G^{-1}&DL_G^{-1}&CL_G^{-1}G_1+DL_G^{-1}G_2},h\yk{\jz{A&B&0\\C&D&0}}=0}In particular, note that $h$ is submersion onto $\R^{m(n-s)}$ so $B,D$ are free coordinates, we can take $B=0,G_1=0$ \gs{
-    \jz{AL_G^{-1}&0&0\\CL_G^{-1}&DL_G^{-1}&DL_G^{-1}G_2},h\yk{\jz{A&0&0\\C&D&0}}=0
-}Here we can use implicit function theorem so that $A,C$ relies on $D$ and some free parameter, namely $A(D,*),C(D,*)$.
-Notice that\gs{L_G=I_r+O(|G|^2) } 
-Now consider the matrice ${\epsilon}D$ and $\frac1\epsilon G$. The Taylor expansion along this direction is\gs{
+\gs{\jz{A(L_{G}^{-1})_1&B(L_{G}^{-1})_2&A(L_{G}^{-1})_1G_1+B(L_{G}^{-1})_2G_2\\C(L_{G}^{-1})_1&D(L_G^{-1})_2&C(L_G^{-1})_1G_1+D(L_G^{-1})_2G_2},h\yk{\jz{A&B&0\\C&D&0}}=0}
+here $$(L_G)^{-1}=\jz{(L_G^{-1})_1\\(L_G^{-1})_2}$$
+In particular, note that $h$ is submersion onto $\R^{m(n-s)}$ so $B,D$ are free coordinates, we can use implicit function theorem so that $A,C$ relies on $D$ and some free parameter $E$, namely $A(D,E),C(D,E)$. So understood $A,C$ \textbf{as a function}, a local parametrization is \gs{(B,D,G,E)\mapsto
+    \jz{A(L_{G}^{-1})_1&B(L_{G}^{-1})_2&A(L_{G}^{-1})_1G_1+B(L_{G}^{-1})_2G_2\\C(L_{G}^{-1})_1&D(L_G^{-1})_2&C(L_G^{-1})_1G_1+D(L_G^{-1})_2G_2}
+}
+In particular, we can fix $B=0,G_1=0,E=0$.
+Notice that in this case\gs{(L_G)^{-1}=\jz{I_s&0\\0&(L_{G_2})^{-1}},(L_G^{-1})_1=(I_s,0),(L_{G}^{-1})_2=I_r+O(|G_2|^2) } so along this direction
+ \gs{
+    (G_2,D)\mapsto \jz{A&0&0\\C&DL_{G_2}^{-1}&DL_{G_2}^{-1}G_2}
+}
+Now consider the matrice ${\epsilon}D$ and $\frac1\epsilon G$. 
+The Taylor expansion along this direction is\gs{
     \jz{\partial^2_DA\cdot D^2&0&0\\\partial^2_DC\cdot D^2&0&0}\epsilon^2+\jz{\p_D A\cdot D &0&0\\ \p_D C\cdot D&D&0}\epsilon+\jz{0&0&0\\0&0&D G_2}+o(|G|^2+|D|^2)
 }
 The second order condition\gs{(f\circ\Phi(\gamma))''=f''(\Phi(\gamma))'+f'(\Phi(\gamma))''\ge 0} together with the first order condition\gs{
@@ -195,7 +202,7 @@ implies\gs{
     \jz{\partial^2_DA\cdot D^2&0&0\\\partial^2_DC\cdot D^2&0&0}\epsilon^2}+f'\yk{\jz{0&0&0\\0&D&D G_2}
     }\\\ge & 0
     }
-for every $\epsilon$. Since epsilon is arbitary, 
+for every $\epsilon$. Since $\epsilon$ is arbitary, 
 \gs{f'\yk{\jz{0&0&0\\0&D&D G_2}
 }\ge 0
 }But this is true for $-D$, so
